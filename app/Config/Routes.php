@@ -24,13 +24,13 @@ use CodeIgniter\Router\RouteCollection;
 
 // $routes->get('/clients', 'DashboardController::clients');
 // $routes->get('/dashboard', 'DashboardController::index');
-$routes->get('/user-withdraw-requests', 'Admin::userWithdrawRequests');
-$routes->get('/games', 'Admin::games');
-$routes->get('/', 'Admin::index');
+$routes->get('/admin/user-withdraw-requests', 'Admin::userWithdrawRequests');
+$routes->get('/admin/games', 'Admin::games');
+$routes->get('/admin/', 'Admin::index');
 
 // $routes->get('/logout', 'AuthController::logout');
 // $routes->post('/attempt-login', 'AuthController::attemptLogin');
-$routes->get('/login', 'AuthController::login');
+$routes->get('/admin/login', 'AuthController::login');
 
 // $routes->get('/ghl-api/fetch-pipelines', 'GHLAPIController::fetchPipelines');
 
