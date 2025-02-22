@@ -19,6 +19,19 @@ class Admin extends BaseController
         return view('games', $data);
     }
 
+    public function gameAnnounceResult($gameId): string
+    {
+        $data = [
+            'title' => 'Announce Game Result',
+            'page_heading' => 'Announce Game Result',
+            'data' => [
+                'gameId' => $gameId
+            ]
+        ];
+
+        return view('game-announce-result', $data);
+    }
+
     public function userWithdrawRequests(): string
     {
         $data = [

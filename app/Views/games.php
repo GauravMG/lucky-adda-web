@@ -75,6 +75,28 @@
         })
     }
 
+    function compareTime(currentTime, otherTime) {
+        // Convert "HH:mm" to total minutes
+        const getMinutes = (time) => {
+            const [hours, minutes] = time.split(':').map(Number);
+            return hours * 60 + minutes;
+        };
+
+        const currentMinutes = getMinutes(currentTime);
+        const otherMinutes = getMinutes(otherTime);
+
+        if (currentMinutes > otherMinutes) {
+            console.log(`${currentTime} is later than ${otherTime}`);
+            return true
+        } else if (currentMinutes < otherMinutes) {
+            console.log(`${currentTime} is earlier than ${otherTime}`);
+            return false
+        } else {
+            return true
+            console.log(`${currentTime} is the same as ${otherTime}`);
+        }
+    }
+
     function fetchGames() {
         $.ajax({
             url: `https://impactadvisoryservices.com/v1/game/list`,
@@ -99,6 +121,11 @@
                 if (response.success) {
                     var html = ""
 
+                    const now = new Date();
+                    const hours = String(now.getHours()).padStart(2, '0'); // Get hours and pad with leading zero if necessary
+                    const minutes = String(now.getMinutes()).padStart(2, '0'); // Get minutes and pad with leading zero if necessary
+                    const currentTime = `${hours}:${minutes}`;
+
                     for (let i = 0; i < response.data?.length; i++) {
                         html += `<tr>
                             <td>${response.data[i].name}</td>
@@ -107,7 +134,7 @@
                             <td>${response.data[i].resultTime}</td>
                             <td>
                                 <div style="display: flex; justify-content: space-around;">
-                                    <span onclick="onClickViewGame(${response.data[i].gameId})"><i class="fa fa-view view-icon"></i></span>
+                                    ${compareTime(currentTime, response.data[i].resultTime)  ? `<span onclick="onClickViewGame(${response.data[i].gameId})"><i class="fa fa-bullhorn view-icon"></i></span>` : ""}
                                 </div>
                             </td>
                         </tr>`
@@ -125,7 +152,7 @@
     }
 
     function onClickViewGame(gameId) {
-        console.log(`gameId`, gameId)
+        window.location.href = `/game/anounce-result/${gameId}`
     }
 </script>
 <?= $this->endSection(); ?>

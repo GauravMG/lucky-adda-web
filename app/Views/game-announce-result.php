@@ -1,0 +1,125 @@
+<?= $this->extend('admin_template'); ?>
+
+<?= $this->section('pageStyles'); ?>
+<link rel="stylesheet" href="<?= base_url('assets/adminlte/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css'); ?>">
+<link rel="stylesheet" href="<?= base_url('assets/adminlte/plugins/datatables-responsive/css/responsive.bootstrap4.min.css'); ?>">
+<link rel="stylesheet" href="<?= base_url('assets/adminlte/plugins/datatables-buttons/css/buttons.bootstrap4.min.css'); ?>">
+<link rel="stylesheet" href="<?= base_url('css/common.css'); ?>">
+<?= $this->endSection(); ?>
+
+<?= $this->section('content'); ?>
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Announce Game Result</h3>
+            </div>
+            <!-- /.card-header -->
+            <form>
+                <div class="card-body">
+                    <div class="form-group">
+                        <label for="resultNumber">Result Number</label>
+                        <input type="text" class="form-control" id="resultNumber" placeholder="Enter result number">
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <form>
+                                    <div class="card-footer">
+                                        <button type="button" class="btn btn-primary" onclick="onClickSubmit()">Submit</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.card-body -->
+            </form>
+        </div>
+        <!-- /.card -->
+    </div>
+    <!-- /.col -->
+</div>
+<?= $this->endSection(); ?>
+
+<?= $this->section('pageScripts'); ?>
+<script src="<?= base_url('assets/adminlte/plugins/datatables/jquery.dataTables.min.js'); ?>"></script>
+<script src="<?= base_url('assets/adminlte/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js'); ?>"></script>
+<script src="<?= base_url('assets/adminlte/plugins/datatables-responsive/js/dataTables.responsive.min.js'); ?>"></script>
+<script src="<?= base_url('assets/adminlte/plugins/datatables-responsive/js/responsive.bootstrap4.min.js'); ?>"></script>
+<script src="<?= base_url('assets/adminlte/plugins/datatables-buttons/js/dataTables.buttons.min.js'); ?>"></script>
+<script src="<?= base_url('assets/adminlte/plugins/datatables-buttons/js/buttons.bootstrap4.min.js'); ?>"></script>
+<script src="<?= base_url('assets/adminlte/plugins/datatables-buttons/js/buttons.html5.min.js'); ?>"></script>
+<script src="<?= base_url('assets/adminlte/plugins/datatables-buttons/js/buttons.print.min.js'); ?>"></script>
+<script src="<?= base_url('assets/adminlte/plugins/datatables-buttons/js/buttons.colVis.min.js'); ?>"></script>
+<script src="<?= base_url('js/common.js') . '?t=' . time(); ?>"></script>
+<script>
+    const gameId = Number('<?php echo $data["gameId"]; ?>')
+
+    $(document).ready(function() {
+        fetchGame()
+    })
+
+    function fetchGame() {
+        $.ajax({
+            url: `https://impactadvisoryservices.com/v1/game/list`,
+            method: 'POST',
+            data: JSON.stringify({
+                "filter": {
+                    gameId
+                },
+                "range": {
+                    "page": 1,
+                    "pageSize": 1
+                }
+            }),
+            contentType: 'application/json',
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`
+            },
+            beforeSend: function() {},
+            complete: function() {},
+            success: function(response) {
+                if (response.success) {
+                    console.log(`response.data`, response.data)
+                }
+            },
+            error: function(xhr, status, error, message) {
+                alert("Something went wrong")
+            }
+        })
+    }
+
+    function onClickSubmit() {
+        const resultNumber = document.getElementById("resultNumber").value
+
+        if ((resultNumber ?? "").trim() === "") {
+            alert("Please enter a valid number")
+            return
+        }
+
+        $.ajax({
+            url: `https://impactadvisoryservices.com/v1/game/process-result`,
+            method: 'POST',
+            data: JSON.stringify({
+                gameId,
+                resultNumber
+            }),
+            contentType: 'application/json',
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`
+            },
+            beforeSend: function() {},
+            complete: function() {},
+            success: function(response) {
+                if (response.success) {
+                    window.location.href = "/games"
+                }
+            },
+            error: function(xhr, status, error, message) {
+                alert("Something went wrong")
+            }
+        })
+    }
+</script>
+<?= $this->endSection(); ?>
