@@ -131,29 +131,31 @@
     }
 
     function onClickUpdateApprovalStatus(walletId, approvalStatus) {
-        $.ajax({
-            url: `https://impactadvisoryservices.com/v1/wallet/update`,
-            method: 'POST',
-            data: JSON.stringify({
-                walletId,
-                approvalStatus
-            }),
-            contentType: 'application/json',
-            headers: {
-                'Authorization': `Bearer ${jwtToken}`
-            },
-            beforeSend: function() {},
-            complete: function() {},
-            success: function(response) {
-                if (response.success) {
-                    alert(response.message)
-                    fetchGames()
+        if (confirm(`Are you sure you want to ${approvalStatus === "approved" ? "approve" : "reject"} this transaction?`)) {
+            $.ajax({
+                url: `https://impactadvisoryservices.com/v1/wallet/update`,
+                method: 'POST',
+                data: JSON.stringify({
+                    walletId,
+                    approvalStatus
+                }),
+                contentType: 'application/json',
+                headers: {
+                    'Authorization': `Bearer ${jwtToken}`
+                },
+                beforeSend: function() {},
+                complete: function() {},
+                success: function(response) {
+                    if (response.success) {
+                        alert(response.message)
+                        fetchGames()
+                    }
+                },
+                error: function(xhr, status, error, message) {
+                    alert("Something went wrong")
                 }
-            },
-            error: function(xhr, status, error, message) {
-                alert("Something went wrong")
-            }
-        })
+            })
+        }
     }
 </script>
 <?= $this->endSection(); ?>
