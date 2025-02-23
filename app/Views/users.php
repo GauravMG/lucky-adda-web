@@ -6,28 +6,22 @@
 <link rel="stylesheet" href="<?= base_url('assets/adminlte/plugins/datatables-buttons/css/buttons.bootstrap4.min.css'); ?>">
 <?= $this->endSection(); ?>
 
-<?= $this->section('headerButtons'); ?>
-<div class="col-md-5 offset-md-7">
-    <a href="/game/add"><button type="button" class="btn btn-primary">Add New Game</button></a>
-</div>
-<?= $this->endSection(); ?>
-
 <?= $this->section('content'); ?>
 <div class="row">
     <div class="col-12">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">All Games</h3>
+                <h3 class="card-title">All Users</h3>
             </div>
             <!-- /.card-header -->
             <div class="card-body">
-                <table id="dtGamesList" class="table table-bordered table-hover">
+                <table id="dtUsersList" class="table table-bordered table-hover">
                     <thead>
                         <tr>
-                            <th>Name</th>
-                            <th>Start Time</th>
-                            <th>End Time</th>
-                            <th>Result Time</th>
+                            <th>Full Name</th>
+                            <th>Mobile</th>
+                            <th>DOB</th>
+                            <th>Resgistration Date</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -35,10 +29,10 @@
                     </tbody>
                     <tfoot>
                         <tr>
-                            <th>Name</th>
-                            <th>Start Time</th>
-                            <th>End Time</th>
-                            <th>Result Time</th>
+                            <th>Full Name</th>
+                            <th>Mobile</th>
+                            <th>DOB</th>
+                            <th>Resgistration Date</th>
                             <th>Actions</th>
                         </tr>
                     </tfoot>
@@ -65,11 +59,11 @@
 
 <script>
     $(document).ready(function() {
-        fetchGames()
+        fetchUsers()
     })
 
-    function initializeDTGamesList() {
-        $("#dtGamesList").DataTable({
+    function initializeDTUsersList() {
+        $("#dtUsersList").DataTable({
             "paging": true,
             "lengthChange": false,
             "searching": false,
@@ -80,42 +74,22 @@
         })
     }
 
-    function compareTime(currentTime, otherTime) {
-        // Convert "HH:mm" to total minutes
-        const getMinutes = (time) => {
-            const [hours, minutes] = time.split(':').map(Number);
-            return hours * 60 + minutes;
-        };
-
-        const currentMinutes = getMinutes(currentTime);
-        const otherMinutes = getMinutes(otherTime);
-
-        if (currentMinutes > otherMinutes) {
-            console.log(`${currentTime} is later than ${otherTime}`);
-            return true
-        } else if (currentMinutes < otherMinutes) {
-            console.log(`${currentTime} is earlier than ${otherTime}`);
-            return false
-        } else {
-            return true
-            console.log(`${currentTime} is the same as ${otherTime}`);
-        }
-    }
-
-    function fetchGames() {
-        if ($.fn.DataTable.isDataTable("#dtGamesList")) {
-            $('#dtGamesList').DataTable().destroy()
+    function fetchUsers() {
+        if ($.fn.DataTable.isDataTable("#dtUsersList")) {
+            $('#dtUsersList').DataTable().destroy()
         }
         $.ajax({
-            url: `https://impactadvisoryservices.com/v1/game/list`,
+            url: `https://impactadvisoryservices.com/v1/user/list`,
             method: 'POST',
             data: JSON.stringify({
-                "filter": {},
+                "filter": {
+                    "roleId": 2
+                },
                 "range": {
                     "all": true
                 },
                 "sort": [{
-                    "orderBy": "startTime",
+                    "orderBy": "fullName",
                     "orderDir": "asc"
                 }]
             }),
@@ -131,22 +105,15 @@
                 if (response.success) {
                     var html = ""
 
-                    const now = new Date();
-                    const hours = String(now.getHours()).padStart(2, '0'); // Get hours and pad with leading zero if necessary
-                    const minutes = String(now.getMinutes()).padStart(2, '0'); // Get minutes and pad with leading zero if necessary
-                    const currentTime = `${hours}:${minutes}`;
-
                     for (let i = 0; i < response.data?.length; i++) {
                         html += `<tr>
-                            <td>${response.data[i].name}</td>
-                            <td>${response.data[i].startTime}</td>
-                            <td>${response.data[i].endTime}</td>
-                            <td>${response.data[i].resultTime}</td>
+                            <td>${response.data[i].fullName ?? ""}</td>
+                            <td>${response.data[i].mobile}</td>
+                            <td>${(response.data[i].dob ?? "").trim() !== "" ? formatDateWithoutTime(response.data[i].dob) : ""}</td>
+                            <td>${formatDate(response.data[i].createdAt)}</td>
                             <td>
                                 <div style="display: flex; justify-content: space-around;">
-                                    ${compareTime(currentTime, response.data[i].resultTime)  ? `<span onclick="onClickViewGame(${response.data[i].gameId})"><i class="fa fa-bullhorn view-icon"></i></span>` : "<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>"}
-                                    <span onclick="() => {}"><i class="fa fa-file-alt view-icon"></i></span>
-                                    <span onclick="onClickDeleteGame(${response.data[i].gameId})"><i class="fa fa-trash view-icon"></i></span>
+                                    <span onclick="onClickDeleteUser(${response.data[i].userId})"><i class="fa fa-trash view-icon"></i></span>
                                 </div>
                             </td>
                         </tr>`
@@ -154,7 +121,7 @@
 
                     document.getElementById("dataList").innerHTML = html
 
-                    initializeDTGamesList()
+                    initializeDTUsersList()
                 }
                 loader.hide()
             },
@@ -165,17 +132,13 @@
         })
     }
 
-    function onClickViewGame(gameId) {
-        window.location.href = `/game/anounce-result/${gameId}`
-    }
-
-    function onClickDeleteGame(gameId) {
-        if (confirm("Are you sure you want to delete this game?")) {
+    function onClickDeleteUser(userId) {
+        if (confirm("Are you sure you want to delete this user?")) {
             $.ajax({
-                url: `https://impactadvisoryservices.com/v1/game/delete`,
+                url: `https://impactadvisoryservices.com/v1/user/delete`,
                 method: 'POST',
                 data: JSON.stringify({
-                    gameIds: [Number(gameId)]
+                    userIds: [Number(userId)]
                 }),
                 contentType: 'application/json',
                 headers: {
@@ -189,8 +152,8 @@
                 },
                 success: function(response) {
                     if (response.success) {
-                        toastr.success("Game deleted successfully!")
-                        fetchGames();
+                        toastr.success("User deleted successfully!")
+                        fetchUsers();
                     }
                 },
                 error: function(xhr, status, error, message) {

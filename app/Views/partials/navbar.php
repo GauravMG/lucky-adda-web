@@ -11,6 +11,9 @@
         <li class="nav-item d-none d-sm-inline-block">
             <a href="/user-withdraw-requests" class="nav-link">User Withdraw Requests</a>
         </li>
+        <li class="nav-item d-none d-sm-inline-block">
+            <a href="/users" class="nav-link">users</a>
+        </li>
     </ul>
 
     <!-- Right navbar links -->

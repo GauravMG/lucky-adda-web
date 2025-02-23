@@ -42,6 +42,16 @@ class Admin extends BaseController
         return view('announce-game-result', $data);
     }
 
+    public function users(): string
+    {
+        $data = [
+            'title' => 'Users',
+            'page_heading' => 'Users'
+        ];
+
+        return view('users', $data);
+    }
+
     public function userWithdrawRequests(): string
     {
         $data = [
