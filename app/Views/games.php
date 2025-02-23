@@ -145,7 +145,7 @@
                             <td>
                                 <div style="display: flex; justify-content: space-around;">
                                     ${compareTime(currentTime, response.data[i].resultTime)  ? `<span onclick="onClickViewGame(${response.data[i].gameId})"><i class="fa fa-bullhorn view-icon"></i></span>` : "<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>"}
-                                    <span onclick="() => {}"><i class="fa fa-file-alt view-icon"></i></span>
+                                    <span onclick="onClickViewGameResultChart(${response.data[i].gameId})"><i class="fa fa-file-alt view-icon"></i></span>
                                     <span onclick="onClickDeleteGame(${response.data[i].gameId})"><i class="fa fa-trash view-icon"></i></span>
                                 </div>
                             </td>
@@ -167,6 +167,10 @@
 
     function onClickViewGame(gameId) {
         window.location.href = `/game/anounce-result/${gameId}`
+    }
+
+    function onClickViewGameResultChart(gameId) {
+        window.location.href = `/game/result-chart/${gameId}`
     }
 
     function onClickDeleteGame(gameId) {

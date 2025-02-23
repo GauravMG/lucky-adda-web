@@ -72,6 +72,16 @@ function formatDateWithoutTime(dateStr) {
     return date.toLocaleString('en-US', options)
 }
 
+function getDateFromDate(dateStr) {
+    const date = new Date(dateStr)
+
+    const options = {
+        day: '2-digit',   // 01, 02, etc.
+    }
+
+    return date.toLocaleString('en-US', options)
+}
+
 function addKInAmount(amount) {
     return `${amount / 1000}K`
 }
