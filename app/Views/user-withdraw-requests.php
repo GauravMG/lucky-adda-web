@@ -145,34 +145,48 @@
     }
 
     function onClickUpdateApprovalStatus(walletId, approvalStatus) {
+        let approvalRemarks = "";
+
+        // Ask for remarks if the status is 'rejected'
+        if (approvalStatus === "rejected") {
+            approvalRemarks = prompt("Please enter remarks for rejection:");
+
+            // If user cancels or enters an empty remark, stop the process
+            if (approvalRemarks === null || approvalRemarks.trim() === "") {
+                toastr.error("Remarks are required for rejection!");
+                return;
+            }
+        }
+
         if (confirm(`Are you sure you want to ${approvalStatus === "approved" ? "approve" : "reject"} this transaction?`)) {
             $.ajax({
                 url: `https://impactadvisoryservices.com/v1/wallet/update`,
                 method: 'POST',
                 data: JSON.stringify({
                     walletId,
-                    approvalStatus
+                    approvalStatus,
+                    approvalRemarks
                 }),
                 contentType: 'application/json',
                 headers: {
                     'Authorization': `Bearer ${jwtToken}`
                 },
                 beforeSend: function() {
-                    loader.show()
+                    loader.show();
                 },
                 complete: function() {
-                    loader.hide()
+                    loader.hide();
                 },
                 success: function(response) {
                     if (response.success) {
-                        toastr.success(`Transaction ${approvalStatus}!`)
-                        fetchGames()
+                        toastr.success(`Transaction ${approvalStatus}!`);
+                        fetchGames();
                     }
                 },
                 error: function(xhr, status, error, message) {
-                    alert("Something went wrong")
+                    alert("Something went wrong");
                 }
-            })
+            });
         }
     }
 </script>
