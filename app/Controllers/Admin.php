@@ -55,6 +55,16 @@ class Admin extends BaseController
         return view('game-result-chart', $data);
     }
 
+    public function resultChart(): string
+    {
+        $data = [
+            'title' => 'Result Chart',
+            'page_heading' => 'Result Chart'
+        ];
+
+        return view('result-chart', $data);
+    }
+
     public function users(): string
     {
         $data = [

@@ -10,6 +10,8 @@ $routes->get('/user-withdraw-requests', 'Admin::userWithdrawRequests');
 
 $routes->get('/users', 'Admin::users');
 
+$routes->get('/result-chart', 'Admin::resultChart');
+
 $routes->get('/game/result-chart/(:any)', 'Admin::gameResultChart/$1');
 $routes->get('/game/anounce-result/(:any)', 'Admin::gameAnnounceResult/$1');
 $routes->get('/game/add', 'Admin::gameAdd');

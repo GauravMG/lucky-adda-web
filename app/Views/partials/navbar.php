@@ -9,10 +9,13 @@
             <a href="/games" class="nav-link">Games</a>
         </li>
         <li class="nav-item d-none d-sm-inline-block">
-            <a href="/user-withdraw-requests" class="nav-link">User Withdraw Requests</a>
+            <a href="/result-chart" class="nav-link">Result Chart</a>
         </li>
         <li class="nav-item d-none d-sm-inline-block">
             <a href="/users" class="nav-link">Users</a>
+        </li>
+        <li class="nav-item d-none d-sm-inline-block">
+            <a href="/user-withdraw-requests" class="nav-link">User Withdraw Requests</a>
         </li>
     </ul>
 

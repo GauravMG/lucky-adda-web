@@ -20,10 +20,10 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="/user-withdraw-requests" class="nav-link">
-                        <i class="nav-icon fas fa-wallet"></i>
+                    <a href="/result-chart" class="nav-link">
+                        <i class="nav-icon fas fa-file-alt"></i>
                         <p>
-                            User Withdraw Requests
+                            Result Chart
                         </p>
                     </a>
                 </li>
@@ -32,6 +32,14 @@
                         <i class="nav-icon fas fa-user"></i>
                         <p>
                             Users
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/user-withdraw-requests" class="nav-link">
+                        <i class="nav-icon fas fa-wallet"></i>
+                        <p>
+                            User Withdraw Requests
                         </p>
                     </a>
                 </li>
