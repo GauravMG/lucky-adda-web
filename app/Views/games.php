@@ -4,7 +4,6 @@
 <link rel="stylesheet" href="<?= base_url('assets/adminlte/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css'); ?>">
 <link rel="stylesheet" href="<?= base_url('assets/adminlte/plugins/datatables-responsive/css/responsive.bootstrap4.min.css'); ?>">
 <link rel="stylesheet" href="<?= base_url('assets/adminlte/plugins/datatables-buttons/css/buttons.bootstrap4.min.css'); ?>">
-<link rel="stylesheet" href="<?= base_url('css/common.css'); ?>">
 <?= $this->endSection(); ?>
 
 <?= $this->section('headerButtons'); ?>
@@ -63,7 +62,7 @@
 <script src="<?= base_url('assets/adminlte/plugins/datatables-buttons/js/buttons.html5.min.js'); ?>"></script>
 <script src="<?= base_url('assets/adminlte/plugins/datatables-buttons/js/buttons.print.min.js'); ?>"></script>
 <script src="<?= base_url('assets/adminlte/plugins/datatables-buttons/js/buttons.colVis.min.js'); ?>"></script>
-<script src="<?= base_url('js/common.js') . '?t=' . time(); ?>"></script>
+
 <script>
     $(document).ready(function() {
         fetchGames()
@@ -124,7 +123,9 @@
             headers: {
                 'Authorization': `Bearer ${jwtToken}`
             },
-            beforeSend: function() {},
+            beforeSend: function() {
+                loader.show()
+            },
             complete: function() {},
             success: function(response) {
                 if (response.success) {
@@ -143,7 +144,8 @@
                             <td>${response.data[i].resultTime}</td>
                             <td>
                                 <div style="display: flex; justify-content: space-around;">
-                                    ${compareTime(currentTime, response.data[i].resultTime)  ? `<span onclick="onClickViewGame(${response.data[i].gameId})"><i class="fa fa-bullhorn view-icon"></i></span>` : ""}
+                                    ${compareTime(currentTime, response.data[i].resultTime)  ? `<span onclick="onClickViewGame(${response.data[i].gameId})"><i class="fa fa-bullhorn view-icon"></i></span>` : "<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>"}
+                                    <span onclick="onClickDeleteGame(${response.data[i].gameId})"><i class="fa fa-file-alt view-icon"></i></span>
                                     <span onclick="onClickDeleteGame(${response.data[i].gameId})"><i class="fa fa-trash view-icon"></i></span>
                                 </div>
                             </td>
@@ -154,9 +156,11 @@
 
                     initializeDTGamesList()
                 }
+                loader.hide()
             },
             error: function(xhr, status, error, message) {
-                alert("Something went wrong")
+                loader.hide()
+                toastr.error("Something went wrong")
             }
         })
     }
@@ -177,16 +181,20 @@
                 headers: {
                     'Authorization': `Bearer ${jwtToken}`
                 },
-                beforeSend: function() {},
-                complete: function() {},
+                beforeSend: function() {
+                    loader.show()
+                },
+                complete: function() {
+                    loader.hide()
+                },
                 success: function(response) {
                     if (response.success) {
-                        alert("Game deleted successfully!");
+                        toastr.success("Game deleted successfully!")
                         fetchGames(); // Refresh the game list
                     }
                 },
                 error: function(xhr, status, error, message) {
-                    alert("Something went wrong");
+                    toastr.error("Something went wrong")
                 }
             });
         }

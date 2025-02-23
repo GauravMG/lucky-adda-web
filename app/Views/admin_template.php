@@ -9,12 +9,19 @@
     <link rel="stylesheet" href="<?= base_url('assets/adminlte/plugins/fontawesome-free/css/all.min.css'); ?>">
     <link rel="stylesheet" href="<?= base_url('assets/adminlte/plugins/toastr/toastr.min.css'); ?>">
     <link rel="stylesheet" href="<?= base_url('assets/adminlte/dist/css/adminlte.min.css'); ?>">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 
     <!-- Section for page-specific CSS -->
     <?= $this->renderSection('pageStyles'); ?>
+
+    <link rel="stylesheet" href="<?= base_url('css/common.css') . '?t=' . time(); ?>">
 </head>
 
 <body class="hold-transition sidebar-mini">
+    <div id="global-loader" class="loader-overlay">
+        <div class="loader"></div>
+    </div>
+
     <div class="wrapper">
         <!-- Navbar -->
         <?= $this->include('partials/navbar'); ?>
@@ -56,9 +63,12 @@
     <script src="<?= base_url('assets/adminlte/plugins/bootstrap/js/bootstrap.bundle.min.js'); ?>"></script>
     <script src="<?= base_url('assets/adminlte/plugins/toastr/toastr.min.js'); ?>"></script>
     <script src="<?= base_url('assets/adminlte/dist/js/adminlte.min.js'); ?>"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
     <!-- Section for page-specific JS -->
     <?= $this->renderSection('pageScripts'); ?>
+
+    <script src="<?= base_url('js/common.js') . '?t=' . time(); ?>"></script>
 </body>
 
 </html>

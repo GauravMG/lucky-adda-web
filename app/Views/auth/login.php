@@ -8,9 +8,53 @@
     <!-- AdminLTE CSS -->
     <link rel="stylesheet" href="<?= base_url('assets/adminlte/plugins/fontawesome-free/css/all.min.css'); ?>">
     <link rel="stylesheet" href="<?= base_url('assets/adminlte/dist/css/adminlte.min.css'); ?>">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+
+    <style>
+        /* Loader container (hidden by default) */
+        .loader-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            display: none;
+            /* Initially hidden */
+        }
+
+        /* Loader animation */
+        .loader {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #fff;
+            border-top: 5px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        /* Keyframes for rotation animation */
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
 </head>
 
 <body class="hold-transition login-page">
+    <div id="global-loader" class="loader-overlay">
+        <div class="loader"></div>
+    </div>
+
     <div class="login-box">
         <div class="login-logo">
             <a href="#"><b>Lucky Adda</b></a>
@@ -70,6 +114,7 @@
     <script src="<?= base_url('assets/adminlte/plugins/jquery/jquery.min.js'); ?>"></script>
     <script src="<?= base_url('assets/adminlte/plugins/bootstrap/js/bootstrap.bundle.min.js'); ?>"></script>
     <script src="<?= base_url('assets/adminlte/dist/js/adminlte.min.js'); ?>"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
     <script>
         const jwtToken = localStorage.getItem("jwtToken")
@@ -79,14 +124,39 @@
 
         var isResend = false
 
+        document.getElementById('mobile').addEventListener('input', function() {
+            let inputValue = this.value;
+
+            // If user types a non-numeric character
+            if (/\D/.test(inputValue)) {
+                toastr.error('Only numbers are allowed!');
+                this.value = inputValue.replace(/\D/g, '');
+            }
+
+            // Limit input to 10 digits
+            if (this.value.length > 10) {
+                toastr.error('Only 10 digits are allowed!');
+                this.value = this.value.slice(0, 10);
+            }
+        });
+
+        const loader = {
+            show: function() {
+                document.getElementById('global-loader').style.display = 'flex';
+            },
+            hide: function() {
+                document.getElementById('global-loader').style.display = 'none';
+            }
+        };
+
         function onClickSendOTP() {
             const mobile = document.getElementById("mobile").value
-            
+
             if ((mobile ?? "").trim().length !== 10) {
-                alert("Please enter a valid mobile number")
+                toastr.error('Please enter a valid mobile number!');
                 return
             }
-            
+
             $.ajax({
                 url: `https://impactadvisoryservices.com/v1/auth/send-otp`,
                 method: 'POST',
@@ -95,16 +165,18 @@
                     verificationType: "login_otp",
                     isResend
                 },
-                beforeSend: function () {
+                beforeSend: function() {
+                    loader.show()
                 },
-                complete: function () {
+                complete: function() {
+                    loader.hide()
                 },
-                success: function (response) {
+                success: function(response) {
                     if (response.success) {
                         isResend = true
 
-                        alert(`And OTP (${response.data.otp}) has been sent your mobile number`)
-                        
+                        toastr.success(`An OTP (${response.data.otp}) has been sent your mobile number!`);
+
                         document.querySelectorAll('.non-otp-container').forEach(element => {
                             element.style.display = 'none';
                         });
@@ -113,7 +185,7 @@
                         });
                     }
                 },
-                error: function (xhr, status, error) {
+                error: function(xhr, status, error) {
                     console.log('Error:', error)
                 }
             })
@@ -122,17 +194,17 @@
         function onClickSignInWithOTP() {
             const mobile = document.getElementById("mobile").value
             const otp = document.getElementById("otp").value
-            
+
             if ((mobile ?? "").trim().length !== 10) {
-                alert("Please enter a valid mobile number")
+                toastr.error('Please enter a valid mobile number!');
                 return
             }
-            
+
             if ((otp ?? "").trim().length !== 6) {
-                alert("Please enter a valid OTP")
+                toastr.error('Please enter a valid OTP!');
                 return
             }
-            
+
             $.ajax({
                 url: `https://impactadvisoryservices.com/v1/auth/sign-in-with-otp`,
                 method: 'POST',
@@ -143,20 +215,26 @@
                     deviceId: "123456",
                     fcmToken: ""
                 },
-                beforeSend: function () {
+                beforeSend: function() {
+                    loader.show()
                 },
-                complete: function () {
-                },
-                success: function (response) {
+                complete: function() {},
+                success: function(response) {
                     if (response.success) {
+                        console.log(`response`, response)
                         localStorage.setItem("jwtToken", response.jwtToken)
                         localStorage.setItem("userData", response.data)
 
-                        window.location.href = "/"
+                        setTimeout(() => {
+                            loader.hide()
+                            toastr.success(`Logged in successfully!`);
+                            window.location.href = "/"
+                        }, [1000])
                     }
                 },
-                error: function (xhr, status, error, message) {
-                    alert("Invalid OTP entered")
+                error: function(xhr, status, error, message) {
+                    loader.hide()
+                    toastr.error('Invalid OTP entered!');
                 }
             })
         }

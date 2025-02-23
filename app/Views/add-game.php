@@ -4,7 +4,6 @@
 <link rel="stylesheet" href="<?= base_url('assets/adminlte/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css'); ?>">
 <link rel="stylesheet" href="<?= base_url('assets/adminlte/plugins/datatables-responsive/css/responsive.bootstrap4.min.css'); ?>">
 <link rel="stylesheet" href="<?= base_url('assets/adminlte/plugins/datatables-buttons/css/buttons.bootstrap4.min.css'); ?>">
-<link rel="stylesheet" href="<?= base_url('css/common.css'); ?>">
 <?= $this->endSection(); ?>
 
 <?= $this->section('content'); ?>
@@ -38,7 +37,7 @@
                             <div class="card">
                                 <form>
                                     <div class="card-footer">
-                                        <button type="button" class="btn btn-primary" onclick="onClickSubmit()">Submit</button>
+                                        <button type="button" class="btn btn-primary">Submit</button>
                                     </div>
                                 </form>
                             </div>
@@ -64,62 +63,134 @@
 <script src="<?= base_url('assets/adminlte/plugins/datatables-buttons/js/buttons.html5.min.js'); ?>"></script>
 <script src="<?= base_url('assets/adminlte/plugins/datatables-buttons/js/buttons.print.min.js'); ?>"></script>
 <script src="<?= base_url('assets/adminlte/plugins/datatables-buttons/js/buttons.colVis.min.js'); ?>"></script>
-<script src="<?= base_url('js/common.js') . '?t=' . time(); ?>"></script>
 <script>
-    function onClickSubmit() {
-        const name = document.getElementById("name").value
-        const city = "-"
-        const logo = "https://impactadvisoryservices.com/app-logo.png"
-        const startTime = document.getElementById("startTime").value
-        const endTime = document.getElementById("endTime").value
-        const resultTime = document.getElementById("resultTime").value
-
-        if ((name ?? "").trim() === "") {
-            alert("Please enter a valid name")
-            return
+    document.addEventListener("DOMContentLoaded", function() {
+        function isValidTimeFormat(time) {
+            return /^([01]\d|2[0-3]):([0-5]\d)$/.test(time); // Ensures HH:MM format
         }
 
-        if ((startTime ?? "").trim() === "") {
-            alert("Please enter a valid start time")
-            return
+        function compareTimes(time1, time2) {
+            return time1.localeCompare(time2); // Compares two times lexicographically
         }
 
-        if ((endTime ?? "").trim() === "") {
-            alert("Please enter a valid end time")
-            return
-        }
+        function validateTimeFields() {
+            let startTime = document.getElementById("startTime").value;
+            let endTime = document.getElementById("endTime").value;
+            let resultTime = document.getElementById("resultTime").value;
 
-        if ((resultTime ?? "").trim() === "") {
-            alert("Please enter a valid result time")
-            return
-        }
-
-        $.ajax({
-            url: `https://impactadvisoryservices.com/v1/game/create`,
-            method: 'POST',
-            data: JSON.stringify({
-                name,
-                city,
-                logo,
-                startTime,
-                endTime,
-                resultTime
-            }),
-            contentType: 'application/json',
-            headers: {
-                'Authorization': `Bearer ${jwtToken}`
-            },
-            beforeSend: function() {},
-            complete: function() {},
-            success: function(response) {
-                if (response.success) {
-                    window.location.href = "/games"
-                }
-            },
-            error: function(xhr, status, error, message) {
-                alert("Something went wrong")
+            if (startTime && !isValidTimeFormat(startTime)) {
+                toastr.error("Start Time must be in HH:MM format!");
+                return false;
             }
-        })
-    }
+            if (endTime && !isValidTimeFormat(endTime)) {
+                toastr.error("End Time must be in HH:MM format!");
+                return false;
+            }
+            if (resultTime && !isValidTimeFormat(resultTime)) {
+                toastr.error("Result Time must be in HH:MM format!");
+                return false;
+            }
+
+            if (startTime && endTime && compareTimes(startTime, endTime) >= 0) {
+                toastr.error("Start Time must be earlier than End Time!");
+                return false;
+            }
+
+            if (startTime && resultTime && compareTimes(startTime, resultTime) >= 0) {
+                toastr.error("Start Time must be earlier than Result Time!");
+                return false;
+            }
+
+            if (endTime && resultTime && compareTimes(endTime, resultTime) >= 0) {
+                toastr.error("End Time must be earlier than Result Time!");
+                return false;
+            }
+
+            return true;
+        }
+
+        document.getElementById("startTime").addEventListener("input", function(e) {
+            let value = e.target.value.replace(/[^0-9:]/g, "").substring(0, 5);
+            e.target.value = value;
+        });
+
+        document.getElementById("endTime").addEventListener("input", function(e) {
+            let value = e.target.value.replace(/[^0-9:]/g, "").substring(0, 5);
+            e.target.value = value;
+        });
+
+        document.getElementById("resultTime").addEventListener("input", function(e) {
+            let value = e.target.value.replace(/[^0-9:]/g, "").substring(0, 5);
+            e.target.value = value;
+        });
+
+        function onClickSubmit() {
+            if (!validateTimeFields()) return;
+
+            const name = document.getElementById("name").value.trim();
+            const city = "-";
+            const logo = "https://impactadvisoryservices.com/app-logo.png";
+            const startTime = document.getElementById("startTime").value;
+            const endTime = document.getElementById("endTime").value;
+            const resultTime = document.getElementById("resultTime").value;
+
+            if (!name) {
+                toastr.error("Please enter a valid name!");
+                return;
+            }
+
+            if (!startTime) {
+                toastr.error("Please enter a valid start time!");
+                return;
+            }
+
+            if (!endTime) {
+                toastr.error("Please enter a valid end time!");
+                return;
+            }
+
+            if (!resultTime) {
+                toastr.error("Please enter a valid result time!");
+                return;
+            }
+
+            if (confirm("Are you sure you want to create this game?")) {
+                $.ajax({
+                    url: "https://impactadvisoryservices.com/v1/game/create",
+                    method: "POST",
+                    data: JSON.stringify({
+                        name,
+                        city,
+                        logo,
+                        startTime,
+                        endTime,
+                        resultTime
+                    }),
+                    contentType: "application/json",
+                    headers: {
+                        Authorization: `Bearer ${jwtToken}`
+                    },
+                    beforeSend: function() {
+                        loader.show();
+                    },
+                    complete: function() {
+                        loader.hide();
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            toastr.success(response.message);
+                            window.location.href = "/games";
+                        }
+                    },
+                    error: function() {
+                        toastr.error("Something went wrong!");
+                    }
+                });
+            }
+        }
+
+        document.querySelector(".btn-primary").addEventListener("click", onClickSubmit);
+    });
 </script>
+
 <?= $this->endSection(); ?>

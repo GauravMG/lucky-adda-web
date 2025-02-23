@@ -1,14 +1,12 @@
 let jwtToken = null
 let userData = null
 
-$(document).ready(function () {
-    jwtToken = localStorage.getItem("jwtToken")
-    userData = localStorage.getItem("userData")
+jwtToken = localStorage.getItem("jwtToken")
+userData = localStorage.getItem("userData")
 
-    if ((jwtToken ?? "").trim() === "") {
-        window.location.href = "/login"
-    }
-})
+if ((jwtToken ?? "").trim() === "") {
+    window.location.href = "/login"
+}
 
 function onClickLogout() {
     $.ajax({
@@ -118,3 +116,12 @@ function onClickDownloadFile(fileUrl) {
     // Remove the link after triggering download
     document.body.removeChild(link);
 }
+
+const loader = {
+    show: function () {
+        document.getElementById('global-loader').style.display = 'flex';
+    },
+    hide: function () {
+        document.getElementById('global-loader').style.display = 'none';
+    }
+};

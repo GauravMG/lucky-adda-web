@@ -39,7 +39,7 @@ class Admin extends BaseController
             ]
         ];
 
-        return view('game-announce-result', $data);
+        return view('announce-game-result', $data);
     }
 
     public function userWithdrawRequests(): string

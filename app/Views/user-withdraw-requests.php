@@ -4,7 +4,6 @@
 <link rel="stylesheet" href="<?= base_url('assets/adminlte/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css'); ?>">
 <link rel="stylesheet" href="<?= base_url('assets/adminlte/plugins/datatables-responsive/css/responsive.bootstrap4.min.css'); ?>">
 <link rel="stylesheet" href="<?= base_url('assets/adminlte/plugins/datatables-buttons/css/buttons.bootstrap4.min.css'); ?>">
-<link rel="stylesheet" href="<?= base_url('css/common.css'); ?>">
 <?= $this->endSection(); ?>
 
 <?= $this->section('content'); ?>
@@ -19,9 +18,12 @@
                 <table id="dtUserWithdrawRequestsList" class="table table-bordered table-hover">
                     <thead>
                         <tr>
+                            <th>Full Name</th>
                             <th>Mobile</th>
                             <th>Amount</th>
                             <th>Withdraw Request Date</th>
+                            <th>Updated Date</th>
+                            <th>Remarks</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -29,9 +31,12 @@
                     </tbody>
                     <tfoot>
                         <tr>
+                            <th>Full Name</th>
                             <th>Mobile</th>
                             <th>Amount</th>
                             <th>Withdraw Request Date</th>
+                            <th>Updated Date</th>
+                            <th>Remarks</th>
                             <th>Actions</th>
                         </tr>
                     </tfoot>
@@ -55,7 +60,6 @@
 <script src="<?= base_url('assets/adminlte/plugins/datatables-buttons/js/buttons.html5.min.js'); ?>"></script>
 <script src="<?= base_url('assets/adminlte/plugins/datatables-buttons/js/buttons.print.min.js'); ?>"></script>
 <script src="<?= base_url('assets/adminlte/plugins/datatables-buttons/js/buttons.colVis.min.js'); ?>"></script>
-<script src="<?= base_url('js/common.js') . '?t=' . time(); ?>"></script>
 <script>
     $(document).ready(function() {
         fetchGames()
@@ -82,7 +86,8 @@
             method: 'POST',
             data: JSON.stringify({
                 "filter": {
-                    "approvalStatus": ["pending"]
+                    "approvalStatus": ["pending", "rejected"],
+                    "transactionType": "debit"
                 },
                 "range": {
                     "all": true
@@ -96,7 +101,9 @@
             headers: {
                 'Authorization': `Bearer ${jwtToken}`
             },
-            beforeSend: function() {},
+            beforeSend: function() {
+                loader.show()
+            },
             complete: function() {},
             success: function(response) {
                 if (response.success) {
@@ -104,13 +111,18 @@
 
                     for (let i = 0; i < response.data?.length; i++) {
                         html += `<tr>
+                            <td>${response.data[i].user.fullName ?? ""}</td>
                             <td>${response.data[i].user.mobile}</td>
                             <td>${response.data[i].amount}</td>
                             <td>${formatDate(response.data[i].createdAt)}</td>
+                            <td>${(response.data[i].updatedAt ?? "").trim() !== "" ? formatDate(response.data[i].updatedAt) : ""}</td>
+                            <td>${response.data[i].approvalRemarks ?? ""}</td>
                             <td>
                                 <div style="display: flex; justify-content: space-around;">
+                                    ${response.data[i].approvalStatus === "pending" ? `
                                     <span onclick="onClickUpdateApprovalStatus(${response.data[i].walletId}, 'approved')"><i class="fa fa-check view-icon"></i></span>
                                     <span onclick="onClickUpdateApprovalStatus(${response.data[i].walletId}, 'rejected')"><i class="fa fa-times view-icon"></i></span>
+                                    ` : `<span style="color: ${response.data[i].approvalStatus === "approved" ? "green" : "red"}">${response.data[i].approvalStatus.toUpperCase()} </span>`}
                                 </div>
                             </td>
                         </tr>`
@@ -123,9 +135,11 @@
                     }
                     initializeDTUserWithdrawRequestsList()
                 }
+                loader.hide()
             },
             error: function(xhr, status, error, message) {
-                alert("Something went wrong")
+                loader.hide()
+                toastr.error("Something went wrong")
             }
         })
     }
@@ -143,11 +157,15 @@
                 headers: {
                     'Authorization': `Bearer ${jwtToken}`
                 },
-                beforeSend: function() {},
-                complete: function() {},
+                beforeSend: function() {
+                    loader.show()
+                },
+                complete: function() {
+                    loader.hide()
+                },
                 success: function(response) {
                     if (response.success) {
-                        alert(response.message)
+                        toastr.success(`Transaction ${approvalStatus}!`)
                         fetchGames()
                     }
                 },

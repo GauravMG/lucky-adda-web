@@ -4,7 +4,6 @@
 <link rel="stylesheet" href="<?= base_url('assets/adminlte/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css'); ?>">
 <link rel="stylesheet" href="<?= base_url('assets/adminlte/plugins/datatables-responsive/css/responsive.bootstrap4.min.css'); ?>">
 <link rel="stylesheet" href="<?= base_url('assets/adminlte/plugins/datatables-buttons/css/buttons.bootstrap4.min.css'); ?>">
-<link rel="stylesheet" href="<?= base_url('css/common.css'); ?>">
 <?= $this->endSection(); ?>
 
 <?= $this->section('content'); ?>
@@ -52,74 +51,46 @@
 <script src="<?= base_url('assets/adminlte/plugins/datatables-buttons/js/buttons.html5.min.js'); ?>"></script>
 <script src="<?= base_url('assets/adminlte/plugins/datatables-buttons/js/buttons.print.min.js'); ?>"></script>
 <script src="<?= base_url('assets/adminlte/plugins/datatables-buttons/js/buttons.colVis.min.js'); ?>"></script>
-<script src="<?= base_url('js/common.js') . '?t=' . time(); ?>"></script>
 <script>
     const gameId = Number('<?php echo $data["gameId"]; ?>')
-
-    $(document).ready(function() {
-        fetchGame()
-    })
-
-    function fetchGame() {
-        $.ajax({
-            url: `https://impactadvisoryservices.com/v1/game/list`,
-            method: 'POST',
-            data: JSON.stringify({
-                "filter": {
-                    gameId
-                },
-                "range": {
-                    "page": 1,
-                    "pageSize": 1
-                }
-            }),
-            contentType: 'application/json',
-            headers: {
-                'Authorization': `Bearer ${jwtToken}`
-            },
-            beforeSend: function() {},
-            complete: function() {},
-            success: function(response) {
-                if (response.success) {
-                    console.log(`response.data`, response.data)
-                }
-            },
-            error: function(xhr, status, error, message) {
-                alert("Something went wrong")
-            }
-        })
-    }
 
     function onClickSubmit() {
         const resultNumber = document.getElementById("resultNumber").value
 
         if ((resultNumber ?? "").trim() === "") {
-            alert("Please enter a valid number")
+            toastr.error("Please enter a valid number")
             return
         }
-
-        $.ajax({
-            url: `https://impactadvisoryservices.com/v1/game/process-result`,
-            method: 'POST',
-            data: JSON.stringify({
-                gameId,
-                resultNumber
-            }),
-            contentType: 'application/json',
-            headers: {
-                'Authorization': `Bearer ${jwtToken}`
-            },
-            beforeSend: function() {},
-            complete: function() {},
-            success: function(response) {
-                if (response.success) {
-                    window.location.href = "/games"
+        
+        if (confirm("Are you sure you want to announce result for this game?")) {
+            $.ajax({
+                url: `https://impactadvisoryservices.com/v1/game/process-result`,
+                method: 'POST',
+                data: JSON.stringify({
+                    gameId,
+                    resultNumber
+                }),
+                contentType: 'application/json',
+                headers: {
+                    'Authorization': `Bearer ${jwtToken}`
+                },
+                beforeSend: function() {
+                    loader.show()
+                },
+                complete: function() {
+                    loader.hide()
+                },
+                success: function(response) {
+                    if (response.success) {
+                        toastr.success("Game result annouced!")
+                        window.location.href = "/games"
+                    }
+                },
+                error: function(xhr, status, error, message) {
+                    toastr.error("Something went wrong")
                 }
-            },
-            error: function(xhr, status, error, message) {
-                alert("Something went wrong")
-            }
-        })
+            })
+        }
     }
 </script>
 <?= $this->endSection(); ?>
