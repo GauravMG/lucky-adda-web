@@ -6,6 +6,15 @@
 <link rel="stylesheet" href="<?= base_url('assets/adminlte/plugins/datatables-buttons/css/buttons.bootstrap4.min.css'); ?>">
 <?= $this->endSection(); ?>
 
+<?= $this->section('headerButtons'); ?>
+<div class="">
+    <div style="display: flex; flex-direction: row; justify-content: flex-end; align-items: center; width: 100%">
+        <label for="monthPicker" style="margin-bottom: unset; margin: 5px;">Select Month & Year:</label>
+        <input type="month" id="monthPicker" class="form-control" style="width: 180px;">
+    </div>
+</div>
+<?= $this->endSection(); ?>
+
 <?= $this->section('content'); ?>
 <div class="row">
     <div class="col-12">
@@ -55,8 +64,19 @@
     const gameId = Number('<?php echo $data["gameId"]; ?>')
 
     $(document).ready(function() {
-        fetchResults()
+        // Get the current month and year in YYYY-MM format
+        const today = new Date();
+        const currentMonth = today.toISOString().slice(0, 7); // "YYYY-MM"
+
+        // Set the default value
+        document.getElementById("monthPicker").value = currentMonth;
+
+        fetchResults(currentMonth)
     })
+
+    document.getElementById("monthPicker").addEventListener("change", function() {
+        fetchResults(this.value)
+    });
 
     function initializeDTGameResultsList() {
         $("#dtGameResultsList").DataTable({
@@ -85,7 +105,7 @@
         return dates;
     }
 
-    function fetchResults() {
+    function fetchResults(resultMonth) {
         if ($.fn.DataTable.isDataTable("#dtGameResultsList")) {
             $('#dtGameResultsList').DataTable().destroy()
         }
@@ -97,7 +117,8 @@
             method: 'POST',
             data: JSON.stringify({
                 "filter": {
-                    gameId
+                    gameId,
+                    resultMonth
                 },
                 "range": {
                     "all": true
