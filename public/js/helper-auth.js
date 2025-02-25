@@ -44,14 +44,14 @@ async function postAPICall({ endPoint, payload, callbackBeforeSend, callbackComp
 
             if (['Unauthorized: Your account is in-active. Please contact admin.'].indexOf(errorMessage) >= 0) {
                 toastr.error(errorMessage);
-                    
+
                 localStorage.removeItem("jwtToken")
                 localStorage.removeItem("userData")
 
                 window.location.href = "/login";
             }
 
-            if (['jwt expired'].includes(errorMessage)) {
+            if (['jwt expired', 'jwt malformed'].includes(errorMessage)) {
                 try {
                     await refreshToken(); // Wait for the token refresh before retrying the API call
 
@@ -61,7 +61,7 @@ async function postAPICall({ endPoint, payload, callbackBeforeSend, callbackComp
 
                     localStorage.removeItem("jwtToken")
                     localStorage.removeItem("userData")
-    
+
                     window.location.href = "/login";
                 }
 
