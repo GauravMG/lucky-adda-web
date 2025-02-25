@@ -203,7 +203,7 @@
                     toastr.error(response.message)
                     fetchUsers()
                 } else {
-                    toastr.success(response.message)
+                    toastr.success(`User ${status === "inactive" ? "blocked" : "unblocked"} successfully`)
                 }
             }
         })
