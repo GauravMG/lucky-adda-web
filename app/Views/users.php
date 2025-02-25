@@ -199,9 +199,9 @@
                 status: status === "inactive" ? false : true
             }),
             callbackSuccess: (response) => {
-                // if (!response.success) {
+                if (!response.success) {
                     fetchUsers()
-                // }
+                }
             }
         })
     }
