@@ -4,6 +4,59 @@
 <link rel="stylesheet" href="<?= base_url('assets/adminlte/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css'); ?>">
 <link rel="stylesheet" href="<?= base_url('assets/adminlte/plugins/datatables-responsive/css/responsive.bootstrap4.min.css'); ?>">
 <link rel="stylesheet" href="<?= base_url('assets/adminlte/plugins/datatables-buttons/css/buttons.bootstrap4.min.css'); ?>">
+
+<style>
+    /* Switch container */
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 50px;
+        height: 24px;
+    }
+
+    /* Hide default checkbox */
+    .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    /* Slider */
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        transition: 0.4s;
+        border-radius: 34px;
+    }
+
+    /* Circle inside the slider */
+    .slider::before {
+        position: absolute;
+        content: "";
+        height: 18px;
+        width: 18px;
+        left: 3px;
+        bottom: 3px;
+        background-color: white;
+        transition: 0.4s;
+        border-radius: 50%;
+    }
+
+    /* Checked state */
+    input:checked+.slider {
+        background-color: #28a745;
+        /* Green */
+    }
+
+    input:checked+.slider::before {
+        transform: translateX(26px);
+    }
+</style>
 <?= $this->endSection(); ?>
 
 <?= $this->section('content'); ?>
@@ -22,7 +75,7 @@
                             <th>Mobile</th>
                             <th>DOB</th>
                             <th>Resgistration Date</th>
-                            <th>Actions</th>
+                            <th>Account Status</th>
                         </tr>
                     </thead>
                     <tbody id="dataList">
@@ -33,7 +86,7 @@
                             <th>Mobile</th>
                             <th>DOB</th>
                             <th>Resgistration Date</th>
-                            <th>Actions</th>
+                            <th>Account Status</th>
                         </tr>
                     </tfoot>
                 </table>
@@ -74,14 +127,14 @@
         })
     }
 
-    function fetchUsers() {
+    async function fetchUsers() {
         if ($.fn.DataTable.isDataTable("#dtUsersList")) {
             $('#dtUsersList').DataTable().destroy()
         }
-        $.ajax({
-            url: `https://impactadvisoryservices.com/v1/user/list`,
-            method: 'POST',
-            data: JSON.stringify({
+
+        await postAPICall({
+            endPoint: "/user/list",
+            payload: JSON.stringify({
                 "filter": {
                     "roleId": 2
                 },
@@ -93,15 +146,8 @@
                     "orderDir": "asc"
                 }]
             }),
-            contentType: 'application/json',
-            headers: {
-                'Authorization': `Bearer ${jwtToken}`
-            },
-            beforeSend: function() {
-                loader.show()
-            },
-            complete: function() {},
-            success: function(response) {
+            callbackComplete: () => {},
+            callbackSuccess: (response) => {
                 if (response.success) {
                     var html = ""
 
@@ -112,55 +158,52 @@
                             <td>${(response.data[i].dob ?? "").trim() !== "" ? formatDateWithoutTime(response.data[i].dob) : ""}</td>
                             <td>${formatDate(response.data[i].createdAt)}</td>
                             <td>
-                                <div style="display: flex; justify-content: space-around;">
-                                    <span onclick="onClickDeleteUser(${response.data[i].userId})"><i class="fa fa-trash view-icon"></i></span>
-                                </div>
+                                <label class="switch">
+                                    <input type="checkbox" class="toggle-status" data-user-id="${response.data[i].userId}" ${response.data[i].status ? "checked" : ""}>
+                                    <span class="slider"></span>
+                                </label>
                             </td>
-                        </tr>`
+                        </tr>`;
                     }
 
-                    document.getElementById("dataList").innerHTML = html
+                    // Insert the generated table rows
+                    document.getElementById("dataList").innerHTML = html;
+
+                    // Add event listeners to all toggle switches after rendering
+                    document.querySelectorAll(".toggle-status").forEach((toggle) => {
+                        toggle.addEventListener("change", function() {
+                            let userId = this.getAttribute("data-user-id");
+                            let newStatus = this.checked ? "active" : "inactive";
+
+                            console.log(`User ID: ${userId}, New Status: ${newStatus}`);
+
+                            // Call API to update user status
+                            updateUserStatus(userId, newStatus);
+                        });
+                    });
+
 
                     initializeDTUsersList()
                 }
                 loader.hide()
-            },
-            error: function(xhr, status, error, message) {
-                loader.hide()
-                toastr.error("Something went wrong")
             }
         })
     }
 
-    function onClickDeleteUser(userId) {
-        if (confirm("Are you sure you want to delete this user?")) {
-            $.ajax({
-                url: `https://impactadvisoryservices.com/v1/user/delete`,
-                method: 'POST',
-                data: JSON.stringify({
-                    userIds: [Number(userId)]
-                }),
-                contentType: 'application/json',
-                headers: {
-                    'Authorization': `Bearer ${jwtToken}`
-                },
-                beforeSend: function() {
-                    loader.show()
-                },
-                complete: function() {
-                    loader.hide()
-                },
-                success: function(response) {
-                    if (response.success) {
-                        toastr.success("User deleted successfully!")
-                        fetchUsers();
-                    }
-                },
-                error: function(xhr, status, error, message) {
-                    toastr.error("Something went wrong")
-                }
-            });
-        }
+    async function updateUserStatus(userId, status) {
+        console.log(`userId, status`, userId, status)
+        await postAPICall({
+            endPoint: "/user/update",
+            payload: JSON.stringify({
+                userId: Number(userId),
+                status: status === "inactive" ? false : true
+            }),
+            callbackSuccess: (response) => {
+                // if (!response.success) {
+                    fetchUsers()
+                // }
+            }
+        })
     }
 </script>
 <?= $this->endSection(); ?>

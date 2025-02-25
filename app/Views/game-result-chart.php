@@ -105,17 +105,16 @@
         return dates;
     }
 
-    function fetchResults(resultMonth) {
+    async function fetchResults(resultMonth) {
         if ($.fn.DataTable.isDataTable("#dtGameResultsList")) {
             $('#dtGameResultsList').DataTable().destroy()
         }
 
         const dates = getDatesOfCurrentMonth()
 
-        $.ajax({
-            url: `https://impactadvisoryservices.com/v1/game/list-result-chart`,
-            method: 'POST',
-            data: JSON.stringify({
+        await postAPICall({
+            endPoint: "/game/list-result-chart",
+            payload: JSON.stringify({
                 "filter": {
                     gameId,
                     resultMonth
@@ -128,15 +127,8 @@
                     "orderDir": "asc"
                 }]
             }),
-            contentType: 'application/json',
-            headers: {
-                'Authorization': `Bearer ${jwtToken}`
-            },
-            beforeSend: function() {
-                loader.show()
-            },
-            complete: function() {},
-            success: function(response) {
+            callbackComplete: () => {},
+            callbackSuccess: (response) => {
                 if (response.success) {
                     const data = response.data[0]
 
@@ -166,10 +158,6 @@
                     initializeDTGameResultsList()
                 }
                 loader.hide()
-            },
-            error: function(xhr, status, error, message) {
-                loader.hide()
-                toastr.error("Something went wrong")
             }
         })
     }

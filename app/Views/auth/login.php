@@ -173,6 +173,11 @@
                 },
                 success: function(response) {
                     if (response.success) {
+                        if (Number(response.data.roleId) !== 1) {
+                            toastr.error(`You are not authorized to login!`);
+                            return
+                        }
+
                         isResend = true
 
                         toastr.success(`An OTP (${response.data.otp}) has been sent your mobile number!`);
@@ -186,7 +191,21 @@
                     }
                 },
                 error: function(xhr, status, error) {
-                    console.log('Error:', error)
+                    let errorMessage = "Something went wrong";
+
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        errorMessage = xhr.responseJSON.message;
+                    } else if (xhr.responseText) {
+                        try {
+                            let parsedResponse = JSON.parse(xhr.responseText);
+                            errorMessage = parsedResponse.message || errorMessage;
+                        } catch (e) {
+                            errorMessage = xhr.responseText;
+                        }
+                    }
+
+                    loader.hide();
+                    toastr.error(errorMessage);
                 }
             })
         }
@@ -221,7 +240,6 @@
                 complete: function() {},
                 success: function(response) {
                     if (response.success) {
-                        console.log(`response`, response)
                         localStorage.setItem("jwtToken", response.jwtToken)
                         localStorage.setItem("userData", response.data)
 
@@ -233,8 +251,21 @@
                     }
                 },
                 error: function(xhr, status, error, message) {
-                    loader.hide()
-                    toastr.error('Invalid OTP entered!');
+                    let errorMessage = "Something went wrong";
+
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        errorMessage = xhr.responseJSON.message;
+                    } else if (xhr.responseText) {
+                        try {
+                            let parsedResponse = JSON.parse(xhr.responseText);
+                            errorMessage = parsedResponse.message || errorMessage;
+                        } catch (e) {
+                            errorMessage = xhr.responseText;
+                        }
+                    }
+
+                    loader.hide();
+                    toastr.error(errorMessage);
                 }
             })
         }

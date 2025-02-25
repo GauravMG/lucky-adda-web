@@ -102,14 +102,14 @@
         }
     }
 
-    function fetchGames() {
+    async function fetchGames() {
         if ($.fn.DataTable.isDataTable("#dtGamesList")) {
             $('#dtGamesList').DataTable().destroy()
         }
-        $.ajax({
-            url: `https://impactadvisoryservices.com/v1/game/list`,
-            method: 'POST',
-            data: JSON.stringify({
+
+        await postAPICall({
+            endPoint: "/game/list",
+            payload: JSON.stringify({
                 "filter": {},
                 "range": {
                     "all": true
@@ -119,15 +119,8 @@
                     "orderDir": "asc"
                 }]
             }),
-            contentType: 'application/json',
-            headers: {
-                'Authorization': `Bearer ${jwtToken}`
-            },
-            beforeSend: function() {
-                loader.show()
-            },
-            complete: function() {},
-            success: function(response) {
+            callbackComplete: () => {},
+            callbackSuccess: (response) => {
                 if (response.success) {
                     var html = ""
 
@@ -157,10 +150,6 @@
                     initializeDTGamesList()
                 }
                 loader.hide()
-            },
-            error: function(xhr, status, error, message) {
-                loader.hide()
-                toastr.error("Something went wrong")
             }
         })
     }
@@ -173,34 +162,20 @@
         window.location.href = `/game/result-chart/${gameId}`
     }
 
-    function onClickDeleteGame(gameId) {
+    async function onClickDeleteGame(gameId) {
         if (confirm("Are you sure you want to delete this game?")) {
-            $.ajax({
-                url: `https://impactadvisoryservices.com/v1/game/delete`,
-                method: 'POST',
-                data: JSON.stringify({
+            await postAPICall({
+                endPoint: "/game/delete",
+                payload: JSON.stringify({
                     gameIds: [Number(gameId)]
                 }),
-                contentType: 'application/json',
-                headers: {
-                    'Authorization': `Bearer ${jwtToken}`
-                },
-                beforeSend: function() {
-                    loader.show()
-                },
-                complete: function() {
-                    loader.hide()
-                },
-                success: function(response) {
+                callbackSuccess: (response) => {
                     if (response.success) {
                         toastr.success("Game deleted successfully!")
                         fetchGames();
                     }
-                },
-                error: function(xhr, status, error, message) {
-                    toastr.error("Something went wrong")
                 }
-            });
+            })
         }
     }
 </script>

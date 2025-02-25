@@ -124,8 +124,8 @@
             e.target.value = value;
         });
 
-        function onClickSubmit() {
-            if (!validateTimeFields()) return;
+        async function onClickSubmit() {
+            if (!await validateTimeFields()) return;
 
             const name = document.getElementById("name").value.trim();
             const city = "-";
@@ -155,10 +155,9 @@
             }
 
             if (confirm("Are you sure you want to create this game?")) {
-                $.ajax({
-                    url: "https://impactadvisoryservices.com/v1/game/create",
-                    method: "POST",
-                    data: JSON.stringify({
+                await postAPICall({
+                    endPoint: "/game/create",
+                    payload: JSON.stringify({
                         name,
                         city,
                         logo,
@@ -166,26 +165,13 @@
                         endTime,
                         resultTime
                     }),
-                    contentType: "application/json",
-                    headers: {
-                        Authorization: `Bearer ${jwtToken}`
-                    },
-                    beforeSend: function() {
-                        loader.show();
-                    },
-                    complete: function() {
-                        loader.hide();
-                    },
-                    success: function(response) {
+                    callbackSuccess: (response) => {
                         if (response.success) {
                             toastr.success(response.message);
                             window.location.href = "/games";
                         }
-                    },
-                    error: function() {
-                        toastr.error("Something went wrong!");
                     }
-                });
+                })
             }
         }
 

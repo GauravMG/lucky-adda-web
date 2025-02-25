@@ -62,7 +62,7 @@
 <script src="<?= base_url('assets/adminlte/plugins/datatables-buttons/js/buttons.colVis.min.js'); ?>"></script>
 <script>
     $(document).ready(function() {
-        fetchGames()
+        fetchUserWithdrawRequest()
     })
 
     function initializeDTUserWithdrawRequestsList() {
@@ -77,14 +77,14 @@
         })
     }
 
-    function fetchGames() {
+    async function fetchUserWithdrawRequest() {
         if ($.fn.DataTable.isDataTable("#dtUserWithdrawRequestsList")) {
             $('#dtUserWithdrawRequestsList').DataTable().destroy()
         }
-        $.ajax({
-            url: `https://impactadvisoryservices.com/v1/wallet/list`,
-            method: 'POST',
-            data: JSON.stringify({
+
+        await postAPICall({
+            endPoint: "/wallet/list",
+            payload: JSON.stringify({
                 "filter": {
                     "approvalStatus": ["pending", "rejected"],
                     "transactionType": "debit"
@@ -97,15 +97,8 @@
                     "orderDir": "desc"
                 }]
             }),
-            contentType: 'application/json',
-            headers: {
-                'Authorization': `Bearer ${jwtToken}`
-            },
-            beforeSend: function() {
-                loader.show()
-            },
-            complete: function() {},
-            success: function(response) {
+            callbackComplete: () => {},
+            callbackSuccess: (response) => {
                 if (response.success) {
                     var html = ""
 
@@ -136,15 +129,11 @@
                     initializeDTUserWithdrawRequestsList()
                 }
                 loader.hide()
-            },
-            error: function(xhr, status, error, message) {
-                loader.hide()
-                toastr.error("Something went wrong")
             }
         })
     }
 
-    function onClickUpdateApprovalStatus(walletId, approvalStatus) {
+    async function onClickUpdateApprovalStatus(walletId, approvalStatus) {
         let approvalRemarks = "";
 
         // Ask for remarks if the status is 'rejected'
@@ -159,34 +148,20 @@
         }
 
         if (confirm(`Are you sure you want to ${approvalStatus === "approved" ? "approve" : "reject"} this transaction?`)) {
-            $.ajax({
-                url: `https://impactadvisoryservices.com/v1/wallet/update`,
-                method: 'POST',
-                data: JSON.stringify({
+            await postAPICall({
+                endPoint: "/wallet/update",
+                payload: JSON.stringify({
                     walletId,
                     approvalStatus,
                     approvalRemarks
                 }),
-                contentType: 'application/json',
-                headers: {
-                    'Authorization': `Bearer ${jwtToken}`
-                },
-                beforeSend: function() {
-                    loader.show();
-                },
-                complete: function() {
-                    loader.hide();
-                },
-                success: function(response) {
+                callbackSuccess: (response) => {
                     if (response.success) {
                         toastr.success(`Transaction ${approvalStatus}!`);
-                        fetchGames();
+                        fetchUserWithdrawRequest();
                     }
-                },
-                error: function(xhr, status, error, message) {
-                    alert("Something went wrong");
                 }
-            });
+            })
         }
     }
 </script>

@@ -68,7 +68,10 @@
     <!-- Section for page-specific JS -->
     <?= $this->renderSection('pageScripts'); ?>
 
+    <script src="<?= base_url('js/helper-auth.js') . '?t=' . time(); ?>"></script>
     <script src="<?= base_url('js/common.js') . '?t=' . time(); ?>"></script>
+    <script src="<?= base_url('js/helper-date.js') . '?t=' . time(); ?>"></script>
+    <script src="<?= base_url('js/helper-text.js') . '?t=' . time(); ?>"></script>
 </body>
 
 </html>
