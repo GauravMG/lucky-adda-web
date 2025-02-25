@@ -200,7 +200,10 @@
             }),
             callbackSuccess: (response) => {
                 if (!response.success) {
+                    toastr.error(response.message)
                     fetchUsers()
+                } else {
+                    toastr.success(response.message)
                 }
             }
         })
