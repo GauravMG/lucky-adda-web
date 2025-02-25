@@ -51,7 +51,24 @@ async function postAPICall({ endPoint, payload, callbackBeforeSend, callbackComp
                 window.location.href = "/login";
             }
 
-            if (['jwt expired', 'jwt malformed'].includes(errorMessage)) {
+            if (['jwt malformed'].includes(errorMessage)) {
+                try {
+                    await refreshToken(); // Wait for the token refresh before retrying the API call
+
+                    postAPICall({ endPoint, payload, callbackBeforeSend, callbackComplete, callbackSuccess });
+                } catch (refreshError) {
+                    toastr.error("Session expired! Please login again.");
+
+                    localStorage.removeItem("jwtToken")
+                    localStorage.removeItem("userData")
+
+                    window.location.href = "/login";
+                }
+
+                return;
+            }
+
+            if (['jwt expired'].includes(errorMessage)) {
                 try {
                     await refreshToken(); // Wait for the token refresh before retrying the API call
 
