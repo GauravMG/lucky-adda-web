@@ -75,6 +75,19 @@ class Admin extends BaseController
         return view('users', $data);
     }
 
+    public function userDetails($userId): string
+    {
+        $data = [
+            'title' => 'User Details',
+            'page_heading' => 'User Details',
+            'data' => [
+                'userId' => $userId
+            ]
+        ];
+
+        return view('user-details', $data);
+    }
+
     public function userWithdrawRequests(): string
     {
         $data = [

@@ -76,6 +76,7 @@
                             <th>DOB</th>
                             <th>Resgistration Date</th>
                             <th>Account Status</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody id="dataList">
@@ -87,6 +88,7 @@
                             <th>DOB</th>
                             <th>Resgistration Date</th>
                             <th>Account Status</th>
+                            <th>Actions</th>
                         </tr>
                     </tfoot>
                 </table>
@@ -136,7 +138,7 @@
             endPoint: "/user/list",
             payload: JSON.stringify({
                 "filter": {
-                    "roleId": 2
+                    // "roleId": 2
                 },
                 "range": {
                     "all": true
@@ -162,6 +164,9 @@
                                     <input type="checkbox" class="toggle-status" data-user-id="${response.data[i].userId}" ${response.data[i].status ? "checked" : ""}>
                                     <span class="slider"></span>
                                 </label>
+                            </td>
+                            <td>
+                                <span onclick="onClickViewUser(${response.data[i].userId})"><i class="fa fa-eye view-icon"></i></span>
                             </td>
                         </tr>`;
                     }
@@ -207,6 +212,10 @@
                 }
             }
         })
+    }
+
+    function onClickViewUser(userId) {
+        window.location.href = `/users/${userId}`
     }
 </script>
 <?= $this->endSection(); ?>

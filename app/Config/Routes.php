@@ -8,13 +8,14 @@ use CodeIgniter\Router\RouteCollection;
 
 $routes->get('/user-withdraw-requests', 'Admin::userWithdrawRequests');
 
+$routes->get('/users/(:any)', 'Admin::userDetails/$1');
 $routes->get('/users', 'Admin::users');
 
 $routes->get('/result-chart', 'Admin::resultChart');
 
-$routes->get('/game/result-chart/(:any)', 'Admin::gameResultChart/$1');
-$routes->get('/game/anounce-result/(:any)', 'Admin::gameAnnounceResult/$1');
-$routes->get('/game/add', 'Admin::gameAdd');
+$routes->get('/games/result-chart/(:any)', 'Admin::gameResultChart/$1');
+$routes->get('/games/anounce-result/(:any)', 'Admin::gameAnnounceResult/$1');
+$routes->get('/games/add', 'Admin::gameAdd');
 $routes->get('/games', 'Admin::games');
 
 $routes->get('/', 'Admin::index');

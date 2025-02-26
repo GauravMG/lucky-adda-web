@@ -8,7 +8,7 @@
 
 <?= $this->section('headerButtons'); ?>
 <div class="col-md-5 offset-md-7">
-    <a href="/game/add"><button type="button" class="btn btn-primary">Add New Game</button></a>
+    <a href="/games/add"><button type="button" class="btn btn-primary">Add New Game</button></a>
 </div>
 <?= $this->endSection(); ?>
 
@@ -155,11 +155,11 @@
     }
 
     function onClickViewGame(gameId) {
-        window.location.href = `/game/anounce-result/${gameId}`
+        window.location.href = `/games/anounce-result/${gameId}`
     }
 
     function onClickViewGameResultChart(gameId) {
-        window.location.href = `/game/result-chart/${gameId}`
+        window.location.href = `/games/result-chart/${gameId}`
     }
 
     async function onClickDeleteGame(gameId) {

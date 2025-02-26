@@ -105,7 +105,7 @@
                     for (let i = 0; i < response.data?.length; i++) {
                         html += `<tr>
                             <td>${response.data[i].user.fullName ?? ""}</td>
-                            <td>${response.data[i].user.mobile}</td>
+                            <td>₹ ${response.data[i].user.mobile}</td>
                             <td>${response.data[i].amount}</td>
                             <td>${formatDate(response.data[i].createdAt)}</td>
                             <td>${(response.data[i].updatedAt ?? "").trim() !== "" ? formatDate(response.data[i].updatedAt) : ""}</td>
