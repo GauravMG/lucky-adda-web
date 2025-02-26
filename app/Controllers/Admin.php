@@ -97,4 +97,14 @@ class Admin extends BaseController
 
         return view('user-withdraw-requests', $data);
     }
+
+    public function appSettings(): string
+    {
+        $data = [
+            'title' => 'App Settings',
+            'page_heading' => 'App Settings'
+        ];
+
+        return view('app-settings', $data);
+    }
 }

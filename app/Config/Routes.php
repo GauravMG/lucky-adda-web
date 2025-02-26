@@ -6,6 +6,8 @@ use CodeIgniter\Router\RouteCollection;
  * @var RouteCollection $routes
  */
 
+$routes->get('/app-settings', 'Admin::appSettings');
+
 $routes->get('/user-withdraw-requests', 'Admin::userWithdrawRequests');
 
 $routes->get('/users/(:any)', 'Admin::userDetails/$1');

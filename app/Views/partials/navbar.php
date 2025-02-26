@@ -12,10 +12,10 @@
             <a href="/result-chart" class="nav-link">Result Chart</a>
         </li>
         <li class="nav-item d-none d-sm-inline-block">
-            <a href="/users" class="nav-link">Users</a>
+            <a href="/user-withdraw-requests" class="nav-link">User Withdraw Requests</a>
         </li>
         <li class="nav-item d-none d-sm-inline-block">
-            <a href="/user-withdraw-requests" class="nav-link">User Withdraw Requests</a>
+            <a href="/app-settings" class="nav-link">App Settings</a>
         </li>
     </ul>
 
