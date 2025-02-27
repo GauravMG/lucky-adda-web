@@ -138,7 +138,7 @@
             endPoint: "/user/list",
             payload: JSON.stringify({
                 "filter": {
-                    // "roleId": 2
+                    "roleId": 2
                 },
                 "range": {
                     "all": true
