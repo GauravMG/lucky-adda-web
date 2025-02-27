@@ -131,10 +131,8 @@
                 if (response.success) {
                     appSettingId = response.data.appSettingId
 
-                    document.getElementById("toggleButton").addEventListener("click", function() {
-                        const toggleSwitch = document.getElementById("isAppShutdown");
-                        toggleSwitch.checked = response.data.isAppShutdown;
-                    });
+                    const toggleSwitch = document.getElementById("isAppShutdown");
+                    toggleSwitch.checked = response.data.isAppShutdown;
                 }
                 loader.hide()
             }
