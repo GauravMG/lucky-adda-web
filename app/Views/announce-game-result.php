@@ -54,40 +54,26 @@
 <script>
     const gameId = Number('<?php echo $data["gameId"]; ?>')
 
-    function onClickSubmit() {
+    async function onClickSubmit() {
         const resultNumber = document.getElementById("resultNumber").value
 
         if ((resultNumber ?? "").trim() === "") {
             toastr.error("Please enter a valid number")
             return
         }
-        
+
         if (confirm("Are you sure you want to announce result for this game?")) {
-            $.ajax({
-                url: `https://impactadvisoryservices.com/v1/game/process-result`,
-                method: 'POST',
-                data: JSON.stringify({
+            await postAPICall({
+                endPoint: "/game/process-result",
+                payload: JSON.stringify({
                     gameId,
                     resultNumber
                 }),
-                contentType: 'application/json',
-                headers: {
-                    'Authorization': `Bearer ${jwtToken}`
-                },
-                beforeSend: function() {
-                    loader.show()
-                },
-                complete: function() {
-                    loader.hide()
-                },
-                success: function(response) {
+                callbackSuccess: (response) => {
                     if (response.success) {
                         toastr.success("Game result annouced!")
                         window.location.href = "/games"
                     }
-                },
-                error: function(xhr, status, error, message) {
-                    toastr.error("Something went wrong")
                 }
             })
         }
