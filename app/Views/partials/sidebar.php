@@ -2,7 +2,7 @@
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
     <a href="/" class="brand-link">
-        <img src="https://impactadvisoryservices.com/app-logo.png" alt="Tru Trade" class="brand-image img-circle elevation-3" style="opacity: .8; background-color: #ffffff;">
+        <img src="https://lucky-adda.com/app-logo.png" alt="Tru Trade" class="brand-image img-circle elevation-3" style="opacity: .8; background-color: #ffffff;">
         <span class="brand-text font-weight-light">Lucky Adda</span>
     </a>
 

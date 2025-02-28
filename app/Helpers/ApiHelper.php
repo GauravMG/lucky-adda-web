@@ -18,6 +18,6 @@ function callApi($url, $data = [])
 
     $method = "POST";
 
-    $response = $client->request($method, "https://impactadvisoryservices.com/" . $url, $options);
+    $response = $client->request($method, "https://lucky-adda.com/" . $url, $options);
     return json_decode($response->getBody(), true);
 }
