@@ -129,7 +129,7 @@
 
             const name = document.getElementById("name").value.trim();
             const city = "-";
-            const logo = "https://lucky-adda.com/app-logo.png";
+            const logo = "https://lucky-adda.com/api/app-logo.png";
             const startTime = document.getElementById("startTime").value;
             const endTime = document.getElementById("endTime").value;
             const resultTime = document.getElementById("resultTime").value;

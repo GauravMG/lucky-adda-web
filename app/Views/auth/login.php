@@ -158,7 +158,7 @@
             }
 
             $.ajax({
-                url: `https://lucky-adda.com/v1/auth/send-otp`,
+                url: `https://lucky-adda.com/api/v1/auth/send-otp`,
                 method: 'POST',
                 data: {
                     mobile,
@@ -225,7 +225,7 @@
             }
 
             $.ajax({
-                url: `https://lucky-adda.com/v1/auth/sign-in-with-otp`,
+                url: `https://lucky-adda.com/api/v1/auth/sign-in-with-otp`,
                 method: 'POST',
                 data: {
                     mobile,

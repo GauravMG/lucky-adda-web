@@ -1,4 +1,4 @@
-const BASE_API_PATH = "https://lucky-adda.com/v1"
+const BASE_API_PATH = "https://lucky-adda.com/api/v1"
 const userData = localStorage.getItem("userData") ?? null
 
 function getJWTToken() {
