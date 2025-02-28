@@ -119,7 +119,7 @@
     <script>
         const jwtToken = localStorage.getItem("jwtToken")
         if ((jwtToken ?? "").trim() !== "") {
-            window.location.href = "/"
+            window.location.href = "/games"
         }
 
         var isResend = false
@@ -246,7 +246,7 @@
                         setTimeout(() => {
                             loader.hide()
                             toastr.success(`Logged in successfully!`);
-                            window.location.href = "/"
+                            window.location.href = "/games"
                         }, [1000])
                     }
                 },
