@@ -70,7 +70,7 @@
 
                 <form>
                     <?= csrf_field() ?>
-                    <div class="input-group mb-3">
+                    <div class="input-group mb-3 mobile-container">
                         <input type="text" name="mobile" id="mobile" class="form-control" placeholder="Mobile" required>
                         <div class="input-group-append">
                             <div class="input-group-text">
@@ -78,9 +78,20 @@
                             </div>
                         </div>
                     </div>
+                    <div class="input-group mb-3 password-container non-otp-container">
+                        <input type="password" name="password" id="password" class="form-control" placeholder="Password" required>
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                                <span class="fas fa-lock"></span>
+                            </div>
+                        </div>
+                    </div>
                     <div class="row non-otp-container">
-                        <div class="col-4 offset-4">
-                            <button type="button" class="btn btn-primary btn-block" onclick="onClickSendOTP()">Send OTP</button>
+                        <div class="col-6">
+                            <button type="button" class="btn btn-primary btn-block" onclick="onClickSignInWithOTP()">Sign In</button>
+                        </div>
+                        <div class="col-6">
+                            <button type="button" class="btn btn-primary btn-block" onclick="onClickForgotPassword()">Forgot Password</button>
                         </div>
                     </div>
                     <div class="otp-container" style="display: none;">
@@ -94,10 +105,33 @@
                         </div>
                         <div class="row">
                             <div class="col-6">
-                                <button type="button" class="btn btn-primary btn-block" onclick="onClickSignInWithOTP()">Sign In</button>
+                                <button type="button" class="btn btn-primary btn-block" onclick="onClickSignInWithOTP()">Verify OTP</button>
                             </div>
                             <div class="col-6">
-                                <button type="button" class="btn btn-primary btn-block" onclick="onClickSendOTP()">Resend OTP</button>
+                                <button type="button" class="btn btn-primary btn-block" onclick="onClickForgotPassword()">Resend OTP</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="new-password-container non-otp-container" style="display: none;">
+                        <div class="input-group mb-3">
+                            <input type="password" name="newPassword" id="newPassword" class="form-control" placeholder="Password" required>
+                            <div class="input-group-append">
+                                <div class="input-group-text">
+                                    <span class="fas fa-lock"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="input-group mb-3">
+                            <input type="password" name="confirmPassword" id="confirmPassword" class="form-control" placeholder="Confirm Password" required>
+                            <div class="input-group-append">
+                                <div class="input-group-text">
+                                    <span class="fas fa-lock"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6 offset-3">
+                                <button type="button" class="btn btn-primary btn-block" onclick="onClickUpdateUserPassword()">Update Password</button>
                             </div>
                         </div>
                     </div>
@@ -123,6 +157,9 @@
         }
 
         var isResend = false
+        var isForgotPassword = false
+        var newUserData = null
+        var newJWTToken = null
 
         document.getElementById('mobile').addEventListener('input', function() {
             let inputValue = this.value;
@@ -149,7 +186,9 @@
             }
         };
 
-        function onClickSendOTP() {
+        function onClickForgotPassword() {
+            isForgotPassword = true
+
             const mobile = document.getElementById("mobile").value
 
             if ((mobile ?? "").trim().length !== 10) {
@@ -163,7 +202,8 @@
                 data: {
                     mobile,
                     verificationType: "login_otp",
-                    isResend
+                    isResend,
+                    isForgotPassword
                 },
                 beforeSend: function() {
                     loader.show()
@@ -212,6 +252,7 @@
 
         function onClickSignInWithOTP() {
             const mobile = document.getElementById("mobile").value
+            const password = document.getElementById("password").value
             const otp = document.getElementById("otp").value
 
             if ((mobile ?? "").trim().length !== 10) {
@@ -219,7 +260,12 @@
                 return
             }
 
-            if ((otp ?? "").trim().length !== 6) {
+            if (!isForgotPassword && (password ?? "").trim() === "") {
+                toastr.error('Please enter a valid password!');
+                return
+            }
+
+            if (isForgotPassword && (otp ?? "").trim().length !== 6) {
                 toastr.error('Please enter a valid OTP!');
                 return
             }
@@ -229,9 +275,10 @@
                 method: 'POST',
                 data: {
                     mobile,
-                    otp: otp,
-                    deviceType: "android",
-                    deviceId: "123456",
+                    otp,
+                    password,
+                    deviceType: "web",
+                    deviceId: "web",
                     fcmToken: ""
                 },
                 beforeSend: function() {
@@ -240,12 +287,95 @@
                 complete: function() {},
                 success: function(response) {
                     if (response.success) {
-                        localStorage.setItem("jwtToken", response.jwtToken)
-                        localStorage.setItem("userData", response.data)
+                        if (isForgotPassword) {
+                            loader.hide()
+
+                            newUserData = response.data
+                            newJWTToken = response.jwtToken
+
+                            document.querySelectorAll('.mobile-container').forEach(element => {
+                                element.style.display = 'none';
+                            });
+                            document.querySelectorAll('.otp-container').forEach(element => {
+                                element.style.display = 'none';
+                            });
+                            document.querySelectorAll('.new-password-container').forEach(element => {
+                                element.style.display = 'block';
+                            });
+                        } else {
+                            localStorage.setItem("jwtToken", response.jwtToken)
+                            localStorage.setItem("userData", response.data)
+
+                            setTimeout(() => {
+                                loader.hide()
+                                toastr.success(`Logged in successfully!`);
+                                window.location.href = "/games"
+                            }, [1000])
+                        }
+                    }
+                },
+                error: function(xhr, status, error, message) {
+                    let errorMessage = "Something went wrong";
+
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        errorMessage = xhr.responseJSON.message;
+                    } else if (xhr.responseText) {
+                        try {
+                            let parsedResponse = JSON.parse(xhr.responseText);
+                            errorMessage = parsedResponse.message || errorMessage;
+                        } catch (e) {
+                            errorMessage = xhr.responseText;
+                        }
+                    }
+
+                    loader.hide();
+                    toastr.error(errorMessage);
+                }
+            })
+        }
+
+        function onClickUpdateUserPassword() {
+            const newPassword = document.getElementById("newPassword").value
+            const confirmPassword = document.getElementById("confirmPassword").value
+
+            if ((newPassword ?? "").trim() === "") {
+                toastr.error('Please enter a valid password!');
+                return
+            }
+
+            if ((confirmPassword ?? "").trim() === "") {
+                toastr.error('Please enter a valid confirm password!');
+                return
+            }
+
+            if (newPassword !== confirmPassword) {
+                toastr.error(`Password and Confirm Password doesn't match!`);
+                return
+            }
+
+            $.ajax({
+                url: `https://lucky-adda.com/api/v1/user/update`,
+                method: 'POST',
+                data: JSON.stringify({
+                    userId: newUserData.userId,
+                    password: newPassword,
+                }),
+                contentType: 'application/json',
+                headers: {
+                    'Authorization': `Bearer ${newJWTToken}`
+                },
+                beforeSend: function() {
+                    loader.show()
+                },
+                complete: function() {},
+                success: function(response) {
+                    if (response.success) {
+                        localStorage.setItem("jwtToken", newJWTToken)
+                        localStorage.setItem("userData", newUserData)
 
                         setTimeout(() => {
                             loader.hide()
-                            toastr.success(`Logged in successfully!`);
+                            toastr.success(`Password updated successfully!`);
                             window.location.href = "/games"
                         }, [1000])
                     }
