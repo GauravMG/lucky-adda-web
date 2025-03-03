@@ -18,7 +18,7 @@
   <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
   <!-- Custom CSS -->
-  <style>
+  <!-- <style>
     :root {
       --primary: #1a1a2e;
       --secondary: #16213e;
@@ -388,7 +388,7 @@
     .download-cta {
       padding: 100px 0;
       background: linear-gradient(135deg, var(--primary), var(--accent));
-      color: white;
+      /* color: white; */
     }
 
     .download-cta h2 {
@@ -399,7 +399,7 @@
     .download-cta p {
       font-size: 1.1rem;
       margin-bottom: 40px;
-      color: rgba(255, 255, 255, 0.8);
+      /* color: rgba(255, 255, 255, 0.8); */
     }
 
     .store-badge {
@@ -568,6 +568,596 @@
         margin-top: 40px;
       }
     }
+  </style> -->
+
+  <style>
+    /* :root {
+      --primary: #d32f2f;
+      /* Deep red for primary actions and branding *
+      --secondary: #ffe6cc;
+      /* Soft peachy background *
+      --accent: #ff9800;
+      /* Golden-orange accent *
+      --highlight: #ff4500;
+      /* Bright orange-red for excitement and action *
+      --light: #ffffff;
+      /* Clean white card background *
+      --dark: #3b1f00;
+      /* Deep brown for readability *
+    } */
+    :root {
+      --primary: #ff1744;
+      /* Deep red for primary actions and branding */
+      --secondary: #1b1b1b;
+      /* Soft peachy background */
+      --accent: #ffcc00;
+      /* Golden-orange accent */
+      --highlight: #ff4500;
+      /* Bright orange-red for excitement and action */
+      --light: #272727;
+      /* Clean white card background */
+      --dark: #d5a845;
+      /* Deep brown for readability */
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: var(--dark);
+      overflow-x: hidden;
+      background-color: var(--secondary);
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      font-weight: 700;
+    }
+
+    .text-gradient {
+      background: linear-gradient(90deg, var(--highlight), #ff9800);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .bg-gradient {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+    }
+
+    .btn-primary {
+      background-color: var(--highlight);
+      border-color: var(--highlight);
+      border-radius: 30px;
+      padding: 12px 30px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      /* color: var(--light); */
+    }
+
+    .btn-primary:hover {
+      background-color: #d63e57;
+      border-color: #d63e57;
+      transform: translateY(-3px);
+      box-shadow: 0 10px 20px rgba(255, 69, 0, 0.2);
+    }
+
+    .btn-outline {
+      color: var(--dark);
+      background-color: transparent;
+      border: 2px solid rgba(59, 31, 0, 0.3);
+      border-radius: 30px;
+      padding: 12px 30px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .btn-outline:hover {
+      border-color: var(--dark);
+      background-color: rgba(255, 69, 0, 0.1);
+      transform: translateY(-3px);
+    }
+
+    /* Navbar */
+    .navbar {
+      transition: all 0.3s ease;
+      padding: 20px 0;
+    }
+
+    .navbar.scrolled {
+      /* background-color: rgba(255, 255, 255, 0.97); */
+      background-color: var(--secondary);
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+      padding: 15px 0;
+    }
+
+    .navbar-brand {
+      font-weight: 700;
+      font-size: 1.5rem;
+      display: flex;
+      align-items: center;
+      color: var(--dark);
+    }
+
+    .navbar-brand .logo {
+      width: 40px;
+      height: 40px;
+      background-color: var(--primary);
+      border-radius: 12px;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      margin-right: 10px;
+    }
+
+    .nav-link {
+      font-weight: 500;
+      padding: 10px 15px !important;
+      transition: all 0.3s ease;
+      color: var(--dark);
+    }
+
+    /* Hero Section */
+    .hero {
+      padding: 180px 0 100px;
+      background-color: var(--light);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-shape {
+      position: absolute;
+      bottom: -10%;
+      right: -10%;
+      width: 50%;
+      height: 50%;
+      background-color: rgba(255, 152, 0, 0.05);
+      border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+      z-index: 0;
+    }
+
+    .hero h1 {
+      font-size: 3.5rem;
+      line-height: 1.2;
+      margin-bottom: 1.5rem;
+      color: var(--primary);
+    }
+
+    .hero p {
+      font-size: 1.2rem;
+      color: #6c757d;
+      margin-bottom: 2rem;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      padding: 0.5rem 1rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--dark);
+      background-color: rgba(255, 152, 0, 0.1);
+      border-radius: 30px;
+      margin-bottom: 1.5rem;
+    }
+
+    .app-screenshot {
+      position: relative;
+      z-index: 1;
+    }
+
+    .app-screenshot img {
+      border-radius: 30px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      transition: all 0.5s ease;
+    }
+
+    .app-screenshot img:hover {
+      transform: translateY(-10px);
+    }
+
+    .floating {
+      animation: float 6s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0% {
+        transform: translateY(0px);
+      }
+
+      50% {
+        transform: translateY(-20px);
+      }
+
+      100% {
+        transform: translateY(0px);
+      }
+    }
+
+    /* Features Section */
+    .features {
+      padding: 100px 0;
+    }
+
+    .section-title {
+      margin-bottom: 60px;
+    }
+
+    .section-title h2 {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+      color: var(--primary);
+    }
+
+    .section-title p {
+      color: #6c757d;
+      font-size: 1.1rem;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .feature-card {
+      background-color: var(--light);
+      border-radius: 20px;
+      padding: 40px 30px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+      transition: all 0.3s ease;
+      height: 100%;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    }
+
+    .feature-icon {
+      width: 70px;
+      height: 70px;
+      border-radius: 20px;
+      background-color: rgba(255, 152, 0, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 30px;
+      color: var(--highlight);
+      margin-bottom: 25px;
+    }
+
+    .feature-card h3 {
+      font-size: 1.5rem;
+      margin-bottom: 15px;
+      color: var(--primary);
+    }
+
+    .feature-card p {
+      color: #6c757d;
+      margin-bottom: 0;
+    }
+
+    /* App Screenshots */
+    .app-screens {
+      padding: 100px 0;
+      background-color: var(--light);
+    }
+
+    .screen-img {
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+    }
+
+    .screen-img:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    .screen-img img {
+      width: 100%;
+      height: auto;
+      border-radius: 20px;
+    }
+
+    /* Testimonials */
+    .testimonials {
+      padding: 100px 0;
+      background-color: var(--light);
+    }
+
+    .testimonial-card {
+      background-color: var(--light);
+      border-radius: 20px;
+      padding: 40px 30px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+      transition: all 0.3s ease;
+      height: 100%;
+      position: relative;
+      z-index: 1;
+    }
+
+    .testimonial-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    }
+
+    .testimonial-card h3 {
+      color: var(--primary);
+    }
+
+    .testimonial-card p {
+      color: #6c757d;
+    }
+
+    .quote-icon {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      font-size: 40px;
+      color: rgba(233, 69, 96, 0.1);
+      z-index: -1;
+    }
+
+    .testimonial-text {
+      font-style: italic;
+      color: #6c757d;
+      margin-bottom: 20px;
+      font-size: 1.1rem;
+    }
+
+    .testimonial-author {
+      display: flex;
+      align-items: center;
+    }
+
+    .author-img {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      overflow: hidden;
+      margin-right: 15px;
+    }
+
+    .author-img img {
+      width: 100%;
+      height: 100%;
+      -o-object-fit: cover;
+      object-fit: cover;
+    }
+
+    .author-info h5 {
+      margin-bottom: 5px;
+      font-size: 1.1rem;
+    }
+
+    .author-info p {
+      color: #6c757d;
+      margin-bottom: 0;
+      font-size: 0.9rem;
+    }
+
+    .rating {
+      color: #ffc107;
+      margin-top: 5px;
+    }
+
+    /* FAQ Section */
+    .faq {
+      padding: 100px 0;
+      background-color: #f8f9fa;
+    }
+
+    .accordion-item {
+      border: none;
+      margin-bottom: 15px;
+      border-radius: 15px !important;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    }
+
+    .accordion-button {
+      padding: 20px 25px;
+      font-weight: 600;
+      background-color: white !important;
+      box-shadow: none !important;
+    }
+
+    .accordion-button:not(.collapsed) {
+      color: var(--highlight);
+    }
+
+    .accordion-body {
+      padding: 0 25px 20px;
+      color: #6c757d;
+    }
+
+    /* Download CTA */
+    .download-cta {
+      padding: 100px 0;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      /* color: white; */
+    }
+
+    .download-cta h2 {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+    }
+
+    .download-cta p {
+      font-size: 1.1rem;
+      margin-bottom: 40px;
+      /* color: rgba(255, 255, 255, 0.8); */
+    }
+
+    .store-badge {
+      display: inline-flex;
+      align-items: center;
+      background-color: white;
+      color: var(--dark);
+      border-radius: 12px;
+      padding: 12px 25px;
+      margin: 10px;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+    }
+
+    .store-badge:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+      color: var(--dark);
+    }
+
+    .store-badge i {
+      font-size: 2rem;
+      margin-right: 15px;
+    }
+
+    .store-badge span {
+      display: flex;
+      flex-direction: column;
+      text-align: left;
+    }
+
+    .store-badge small {
+      font-size: 0.8rem;
+      color: #6c757d;
+    }
+
+    .store-badge strong {
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+
+    /* Footer */
+    .footer {
+      padding: 80px 0 30px;
+      background-color: var(--secondary);
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    .footer-logo {
+      font-weight: 700;
+      font-size: 1.5rem;
+      display: flex;
+      align-items: center;
+      color: white;
+      margin-bottom: 20px;
+    }
+
+    .footer-logo .logo {
+      width: 40px;
+      height: 40px;
+      background-color: var(--highlight);
+      border-radius: 12px;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      margin-right: 10px;
+    }
+
+    .footer-text {
+      margin-bottom: 25px;
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .social-links {
+      margin-bottom: 30px;
+    }
+
+    .social-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.8);
+      margin-right: 10px;
+      transition: all 0.3s ease;
+    }
+
+    .social-link:hover {
+      background-color: var(--highlight);
+      color: white;
+      transform: translateY(-3px);
+    }
+
+    .footer h5 {
+      color: white;
+      margin-bottom: 20px;
+      font-size: 1.2rem;
+    }
+
+    .footer-links {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .footer-links li {
+      margin-bottom: 12px;
+    }
+
+    .footer-links a {
+      color: rgba(255, 255, 255, 0.7);
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .footer-links a:hover {
+      color: white;
+      text-decoration: none;
+    }
+
+    .copyright {
+      text-align: center;
+      padding-top: 30px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    /* Responsive */
+    @media (max-width: 991.98px) {
+      .hero {
+        padding: 150px 0 80px;
+      }
+
+      .hero h1 {
+        font-size: 2.8rem;
+      }
+
+      .section-title h2 {
+        font-size: 2rem;
+      }
+
+      .feature-card,
+      .testimonial-card {
+        margin-bottom: 30px;
+      }
+    }
+
+    @media (max-width: 767.98px) {
+      .hero {
+        padding: 120px 0 60px;
+      }
+
+      .hero h1 {
+        font-size: 2.2rem;
+      }
+
+      .hero p {
+        font-size: 1rem;
+      }
+
+      .app-screenshot {
+        margin-top: 40px;
+      }
+    }
+
+    /* Add more sections here if needed */
   </style>
 
   <!-- IMPORTANT: DO NOT REMOVE THIS SCRIPT TAG OR THIS VERY COMMENT! -->
@@ -635,9 +1225,9 @@
     <div class="container">
       <div class="row align-items-center">
         <div class="col-lg-6" data-aos="fade-right">
-          <div class="hero-badge">THE ULTIMATE BETTING EXPERIENCE</div>
-          <h1>Bet Smarter, Win <span class="text-gradient">Bigger</span> with PlayGlimpse</h1>
-          <p>Experience the thrill of betting with our intuitive, user-friendly mobile app designed to elevate your gaming journey and maximize your winnings.</p>
+          <div class="hero-badge">THE ULTIMATE MATKA BETTING EXPERIENCE</div>
+          <h1>Bet Smarter, Win <span class="text-gradient">Bigger</span> with Lucky Adda</h1>
+          <p>Step into the exciting world of Matka betting with Lucky Adda, your go-to app for seamless gaming and winning opportunities. With a user-friendly interface and real-time updates, we bring you the ultimate betting platform designed to enhance your experience and maximize your winnings.</p>
           <div class="d-flex flex-wrap gap-2">
             <!-- <a href="#download" class="btn btn-primary">
               <i class="fab fa-apple me-2"></i> Download for iOS
@@ -660,8 +1250,8 @@
   <section class="features" id="features">
     <div class="container">
       <div class="section-title text-center" data-aos="fade-up">
-        <h2>Features That Set Us Apart</h2>
-        <p>Discover what makes our betting app the preferred choice among enthusiasts.</p>
+        <h2>Features That Set Lucky Adda Apart</h2>
+        <p>Explore the unique features that make Lucky Adda the preferred choice for Matka enthusiasts.</p>
       </div>
 
       <div class="row g-4">
@@ -670,8 +1260,8 @@
             <div class="feature-icon">
               <i class="fas fa-trophy"></i>
             </div>
-            <h3>Competitive Odds</h3>
-            <p>We offer the most competitive odds in the market, giving you better returns on your successful bets.</p>
+            <h3>Best Odds & Payouts</h3>
+            <p>Get access to highly competitive odds and enjoy the best payouts, giving you more value with every successful bet.</p>
           </div>
         </div>
 
@@ -680,8 +1270,8 @@
             <div class="feature-icon">
               <i class="fas fa-shield-alt"></i>
             </div>
-            <h3>Secure Transactions</h3>
-            <p>Your financial information is protected with state-of-the-art encryption technology.</p>
+            <h3>Secure & Trusted Transactions</h3>
+            <p>Your transactions are safe with Lucky Adda, thanks to advanced encryption technology ensuring secure deposits and withdrawals.</p>
           </div>
         </div>
 
@@ -690,21 +1280,21 @@
             <div class="feature-icon">
               <i class="fas fa-mobile-alt"></i>
             </div>
-            <h3>User-Friendly Interface</h3>
-            <p>Our intuitive design makes placing bets quick and easy, even for beginners.</p>
+            <h3>Simple & Intuitive Interface</h3>
+            <p>Whether you're a pro or a beginner, our app's intuitive design makes placing bets quick, easy, and hassle-free.</p>
           </div>
         </div>
       </div>
 
-      <div class="row mt-5 align-items-center">
+      <!-- <div class="row mt-5 align-items-center">
         <div class="col-lg-6" data-aos="fade-right">
           <div class="p-4">
             <div class="mb-3 d-inline-block px-3 py-1 rounded-pill" style="background-color: rgba(233, 69, 96, 0.1);">
               <span class="text-dark fw-medium">PLAY SMARTER</span>
             </div>
-            <h3 class="mb-4">Real-Time Analytics & Insights</h3>
+            <h3 class="mb-4">SMART BETTING WITH REAL-TIME ANALYTICS</h3>
             <p class="text-muted mb-4">
-              Access comprehensive statistics and analysis to make informed betting decisions. Our app provides you with the data you need to maximize your chances of winning.
+            Stay ahead of the game with data-driven insights and real-time analytics. Lucky Adda empowers you with the tools and stats needed to make smarter betting decisions.
             </p>
             <ul class="list-unstyled">
               <li class="mb-3">
@@ -731,12 +1321,12 @@
             <img src="https://images.unsplash.com/photo-1577741314755-048d8525d31e?q=80&w=1000&auto=format&fit=crop" alt="Analytics dashboard" class="img-fluid rounded-4 shadow">
           </div>
         </div>
-      </div>
+      </div> -->
     </div>
   </section>
 
   <!-- App Screenshots -->
-  <section class="app-screens" id="screenshots">
+  <!-- <section class="app-screens" id="screenshots">
     <div class="container">
       <div class="section-title text-center" data-aos="fade-up">
         <h2>See the App in Action</h2>
@@ -817,10 +1407,10 @@
         </div>
       </div>
     </div>
-  </section>
+  </section> -->
 
   <!-- Testimonials -->
-  <section class="testimonials" id="testimonials">
+  <!-- <section class="testimonials" id="testimonials">
     <div class="container">
       <div class="section-title text-center" data-aos="fade-up">
         <h2>What Our Users Say</h2>
@@ -910,10 +1500,10 @@
         </div>
       </div>
     </div>
-  </section>
+  </section> -->
 
   <!-- FAQ Section -->
-  <section class="faq" id="faq">
+  <!-- <section class="faq" id="faq">
     <div class="container">
       <div class="section-title text-center" data-aos="fade-up">
         <h2>Got Questions? We Have Answers</h2>
@@ -991,15 +1581,16 @@
         </div>
       </div>
     </div>
-  </section>
+  </section> -->
 
   <!-- Download CTA -->
   <section class="download-cta bg-gradient" id="download">
     <div class="container">
       <div class="row justify-content-center text-center">
         <div class="col-lg-8" data-aos="fade-up">
-          <h2>Ready to Transform Your Betting Experience?</h2>
-          <p>Download our app now and join thousands of users who have elevated their betting game.</p>
+          <h2>Ready to Transform Your Matka Betting Experience?</h2>
+          <p>Download Lucky Adda now and join thousands of players who have taken their betting journey to the next level. Experience smarter betting, bigger wins, and the ultimate thrill — all in one app!</p>
+          <p>👉 Download Now & Start Winning!</p>
           <div class="d-flex flex-wrap justify-content-center gap-2">
             <!-- <a href="#" class="store-badge">
               <i class="fab fa-apple"></i>
@@ -1039,16 +1630,16 @@
             </div>
             Lucky Adda
           </a>
-          <p class="footer-text">Experience the next level of betting with our innovative mobile application. Join us today and start winning big!</p>
-          <div class="social-links">
+          <p class="footer-text">Take your betting experience to the next level with our cutting-edge mobile app. Join now and start winning big!</p>
+          <!-- <div class="social-links">
             <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
             <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
             <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
             <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
-          </div>
+          </div> -->
         </div>
 
-        <div class="col-6 col-md-3 col-lg-2 mb-5 mb-md-0">
+        <!-- <div class="col-6 col-md-3 col-lg-2 mb-5 mb-md-0">
           <h5>Company</h5>
           <ul class="footer-links">
             <li><a href="#">About Us</a></li>
@@ -1056,9 +1647,9 @@
             <li><a href="#">Partners</a></li>
             <li><a href="#">Press</a></li>
           </ul>
-        </div>
+        </div> -->
 
-        <div class="col-6 col-md-3 col-lg-2 mb-5 mb-md-0">
+        <!-- <div class="col-6 col-md-3 col-lg-2 mb-5 mb-md-0">
           <h5>Product</h5>
           <ul class="footer-links">
             <li><a href="#">Features</a></li>
@@ -1066,9 +1657,9 @@
             <li><a href="#">Pricing</a></li>
             <li><a href="#">Security</a></li>
           </ul>
-        </div>
+        </div> -->
 
-        <div class="col-6 col-md-3 col-lg-2 mb-5 mb-md-0">
+        <!-- <div class="col-6 col-md-3 col-lg-2 mb-5 mb-md-0">
           <h5>Support</h5>
           <ul class="footer-links">
             <li><a href="#">Help Center</a></li>
@@ -1076,9 +1667,9 @@
             <li><a href="#">Community</a></li>
             <li><a href="#">FAQs</a></li>
           </ul>
-        </div>
+        </div> -->
 
-        <div class="col-6 col-md-3 col-lg-2">
+        <!-- <div class="col-6 col-md-3 col-lg-2">
           <h5>Legal</h5>
           <ul class="footer-links">
             <li><a href="#">Terms of Service</a></li>
@@ -1086,11 +1677,11 @@
             <li><a href="#">Cookie Policy</a></li>
             <li><a href="#">Responsible Gaming</a></li>
           </ul>
-        </div>
+        </div> -->
       </div>
 
       <div class="copyright mt-5">
-        <p>&copy; 2023 PlayGlimpse. All rights reserved.</p>
+        <p>&copy; 2025 Lucky Adda. All rights reserved.</p>
       </div>
     </div>
   </footer>
