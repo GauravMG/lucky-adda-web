@@ -198,24 +198,47 @@
                 return;
             }
 
-            if (confirm("Are you sure you want to create this game?")) {
-                await postAPICall({
-                    endPoint: "/game/create",
-                    payload: JSON.stringify({
-                        name,
-                        city,
-                        logo,
-                        startTime,
-                        endTime,
-                        resultTime
-                    }),
-                    callbackSuccess: (response) => {
-                        if (response.success) {
-                            toastr.success(response.message);
-                            window.location.href = "/games";
+            if (gameId !== "") {
+                if (confirm("Are you sure you want to edit this game?")) {
+                    await postAPICall({
+                        endPoint: "/game/edit",
+                        payload: JSON.stringify({
+                            gameId: Number(gameId),
+                            name,
+                            city,
+                            logo,
+                            startTime,
+                            endTime,
+                            resultTime
+                        }),
+                        callbackSuccess: (response) => {
+                            if (response.success) {
+                                toastr.success(response.message);
+                                window.location.href = "/games";
+                            }
                         }
-                    }
-                })
+                    })
+                }
+            } else {
+                if (confirm("Are you sure you want to create this game?")) {
+                    await postAPICall({
+                        endPoint: "/game/create",
+                        payload: JSON.stringify({
+                            name,
+                            city,
+                            logo,
+                            startTime,
+                            endTime,
+                            resultTime
+                        }),
+                        callbackSuccess: (response) => {
+                            if (response.success) {
+                                toastr.success(response.message);
+                                window.location.href = "/games";
+                            }
+                        }
+                    })
+                }
             }
         }
 
