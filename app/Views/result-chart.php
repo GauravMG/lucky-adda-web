@@ -85,6 +85,14 @@
             "info": true,
             "autoWidth": false,
             "responsive": true,
+            "createdRow": function(row, data, index) {
+                $('td', row).each(function(columnIndex) {
+                    let colors = ["#f4c2c2", "#b3d9ff", "#ffdab3", "#d6f5d6", "#f7c6e6", "#e0ccff", "#cceeff", "#ffe680", "#e68a8a", "#80bfff", "#ffd966", "#b3ffb3", "#ffb3ff", "#ffcc99", "#d9d9d9"]; // Add more colors if needed
+                    let colorIndex = columnIndex % colors.length; // Cycle through colors
+                    $(this).css('background-color', colors[colorIndex]);
+                    $(this).css('color', 'black'); // First column black text, others white
+                });
+            }
         })
     }
 
