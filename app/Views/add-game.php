@@ -201,7 +201,7 @@
             if (gameId !== "") {
                 if (confirm("Are you sure you want to edit this game?")) {
                     await postAPICall({
-                        endPoint: "/game/edit",
+                        endPoint: "/game/update",
                         payload: JSON.stringify({
                             gameId: Number(gameId),
                             name,
