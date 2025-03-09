@@ -68,10 +68,10 @@
 <script src="<?= base_url('assets/adminlte/plugins/datatables-buttons/js/buttons.print.min.js'); ?>"></script>
 <script src="<?= base_url('assets/adminlte/plugins/datatables-buttons/js/buttons.colVis.min.js'); ?>"></script>
 <script>
-    const gameId = Number('<?php echo $data["gameId"]; ?>')
+    let gameId = '<?php if (isset($data)) { echo $data["gameId"]; } else { echo ""; } ?>'
 
     document.addEventListener("DOMContentLoaded", function() {
-        if (gameId) {
+        if (gameId !== "") {
             fetchGame()
         }
 
