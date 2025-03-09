@@ -4,6 +4,14 @@
 <link rel="stylesheet" href="<?= base_url('assets/adminlte/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css'); ?>">
 <link rel="stylesheet" href="<?= base_url('assets/adminlte/plugins/datatables-responsive/css/responsive.bootstrap4.min.css'); ?>">
 <link rel="stylesheet" href="<?= base_url('assets/adminlte/plugins/datatables-buttons/css/buttons.bootstrap4.min.css'); ?>">
+
+<style>
+    .logo {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+    }
+</style>
 <?= $this->endSection(); ?>
 
 <?= $this->section('headerButtons'); ?>
@@ -24,6 +32,7 @@
                 <table id="dtGamesList" class="table table-bordered table-hover">
                     <thead>
                         <tr>
+                            <th>Logo</th>
                             <th>Name</th>
                             <th>Start Time</th>
                             <th>End Time</th>
@@ -35,6 +44,7 @@
                     </tbody>
                     <tfoot>
                         <tr>
+                            <th>Logo</th>
                             <th>Name</th>
                             <th>Start Time</th>
                             <th>End Time</th>
@@ -131,6 +141,7 @@
 
                     for (let i = 0; i < response.data?.length; i++) {
                         html += `<tr>
+                            <td><img class="logo" src="${response.data[i].logo}" alt="${response.data[i].name}" /></td>
                             <td>${response.data[i].name}</td>
                             <td>${response.data[i].startTime}</td>
                             <td>${response.data[i].endTime}</td>
@@ -140,6 +151,7 @@
                                     ${compareTime(currentTime, response.data[i].resultTime)  ? `<!-- <span onclick="onClickViewGame(${response.data[i].gameId})"><i class="fa fa-bullhorn view-icon"></i></span> -->` : "<!-- <span>&nbsp;&nbsp;&nbsp;&nbsp;</span> -->"}
                                     <span onclick="onClickViewGame(${response.data[i].gameId})"><i class="fa fa-bullhorn view-icon"></i></span>
                                     <span onclick="onClickViewGameResultChart(${response.data[i].gameId})"><i class="fa fa-file-alt view-icon"></i></span>
+                                    <span onclick="onClickEditGame(${response.data[i].gameId})"><i class="fa fa-edit view-icon"></i></span>
                                     <span onclick="onClickDeleteGame(${response.data[i].gameId})"><i class="fa fa-trash view-icon"></i></span>
                                 </div>
                             </td>
@@ -161,6 +173,10 @@
 
     function onClickViewGameResultChart(gameId) {
         window.location.href = `/games/result-chart/${gameId}`
+    }
+
+    function onClickEditGame(gameId) {
+        window.location.href = `/games/edit/${gameId}`
     }
 
     async function onClickDeleteGame(gameId) {

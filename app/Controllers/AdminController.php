@@ -55,6 +55,19 @@ class AdminController extends BaseController
         return view('game-result-chart', $data);
     }
 
+    public function gameEdit($gameId): string
+    {
+        $data = [
+            'title' => 'Edit Game',
+            'page_heading' => 'Edit Game',
+            'data' => [
+                'gameId' => $gameId
+            ]
+        ];
+
+        return view('add-game', $data);
+    }
+
     public function resultChart(): string
     {
         $data = [

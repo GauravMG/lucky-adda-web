@@ -11,7 +11,11 @@
     <div class="col-12">
         <div class="card card-dark">
             <div class="card-header">
-                <h3 class="card-title">Add New Game</h3>
+                <h3 class="card-title"><?php if (isset($data["gameId"])) {
+                                            echo "Edit Game";
+                                        } else {
+                                            echo "Add New Game";
+                                        } ?></h3>
             </div>
             <!-- /.card-header -->
             <form>
@@ -64,7 +68,11 @@
 <script src="<?= base_url('assets/adminlte/plugins/datatables-buttons/js/buttons.print.min.js'); ?>"></script>
 <script src="<?= base_url('assets/adminlte/plugins/datatables-buttons/js/buttons.colVis.min.js'); ?>"></script>
 <script>
+    const gameId = Number('<?php echo $data["gameId"]; ?>')
+
     document.addEventListener("DOMContentLoaded", function() {
+        fetchGame()
+
         function isValidTimeFormat(time) {
             return /^([01]\d|2[0-3]):([0-5]\d)$/.test(time); // Ensures HH:MM format
         }
@@ -123,6 +131,36 @@
             let value = e.target.value.replace(/[^0-9:]/g, "").substring(0, 5);
             e.target.value = value;
         });
+
+        async function fetchGame() {
+            await postAPICall({
+                endPoint: "/game/list",
+                payload: JSON.stringify({
+                    "filter": {
+                        gameId
+                    },
+                    "range": {
+                        "all": true
+                    },
+                    "sort": [{
+                        "orderBy": "startTime",
+                        "orderDir": "asc"
+                    }]
+                }),
+                callbackComplete: () => {},
+                callbackSuccess: (response) => {
+                    if (response.success) {
+                        const data = response.data[0]
+                        document.getElementById("name").value = data.name
+                        document.getElementById("startTime").value = data.startTime
+                        document.getElementById("endTime").value = data.endTime
+                        document.getElementById("resultTime").value = data.resultTime
+                    }
+
+                    loader.hide()
+                }
+            })
+        }
 
         async function onClickSubmit() {
             if (!await validateTimeFields()) return;

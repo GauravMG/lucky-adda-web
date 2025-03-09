@@ -15,6 +15,7 @@ $routes->get('/users', 'AdminController::users');
 
 $routes->get('/result-chart', 'AdminController::resultChart');
 
+$routes->get('/games/edit/(:any)', 'AdminController::gameEdit/$1');
 $routes->get('/games/result-chart/(:any)', 'AdminController::gameResultChart/$1');
 $routes->get('/games/anounce-result/(:any)', 'AdminController::gameAnnounceResult/$1');
 $routes->get('/games/add', 'AdminController::gameAdd');
