@@ -62,7 +62,7 @@
 <?= $this->section('content'); ?>
 <div class="row">
     <div class="col-12">
-        <div class="card">
+        <div class="card card-dark">
             <div class="card-header">
                 <h3 class="card-title">All Users</h3>
             </div>
@@ -121,7 +121,7 @@
         $("#dtUsersList").DataTable({
             "paging": true,
             "lengthChange": false,
-            "searching": false,
+            "searching": true,
             "ordering": true,
             "info": true,
             "autoWidth": false,
@@ -138,7 +138,7 @@
             endPoint: "/user/list",
             payload: JSON.stringify({
                 "filter": {
-                    "roleId": 2
+                    // "roleId": 2
                 },
                 "range": {
                     "all": true

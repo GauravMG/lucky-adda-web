@@ -15,7 +15,7 @@
 <?= $this->section('content'); ?>
 <div class="row">
     <div class="col-12">
-        <div class="card">
+        <div class="card card-dark">
             <div class="card-header">
                 <h3 class="card-title">All Games</h3>
             </div>
@@ -72,7 +72,7 @@
         $("#dtGamesList").DataTable({
             "paging": true,
             "lengthChange": false,
-            "searching": false,
+            "searching": true,
             "ordering": true,
             "info": true,
             "autoWidth": false,

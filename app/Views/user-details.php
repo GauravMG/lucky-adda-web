@@ -4,6 +4,25 @@
 <link rel="stylesheet" href="<?= base_url('assets/adminlte/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css'); ?>">
 <link rel="stylesheet" href="<?= base_url('assets/adminlte/plugins/datatables-responsive/css/responsive.bootstrap4.min.css'); ?>">
 <link rel="stylesheet" href="<?= base_url('assets/adminlte/plugins/datatables-buttons/css/buttons.bootstrap4.min.css'); ?>">
+
+<style>
+    .red {
+        color: red;
+    }
+
+    .green {
+        color: green;
+    }
+
+    .bet-pair {
+        border: 1px solid;
+        margin: 5px;
+        padding: 5px;
+        display: inline-block;
+        border-radius: 7px;
+        text-align: center;
+    }
+</style>
 <?= $this->endSection(); ?>
 
 <?= $this->section('content'); ?>
@@ -11,10 +30,9 @@
     <div class="col-12">
         <div class="row">
             <div class="col-md-3">
-                <div class="card">
+                <div class="card card-dark">
                     <div class="card-header">
                         <h3 class="card-title">Personal Details</h3>
-                        <span id="leadCreatedAt" style="float: right; font-size: 12px;"></span>
                     </div>
                     <div class="card-body">
                         <div class="form-group">
@@ -36,10 +54,9 @@
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="card">
+                <div class="card card-dark">
                     <div class="card-header">
                         <h3 class="card-title">UPI Details</h3>
-                        <span id="leadCreatedAt" style="float: right; font-size: 12px;"></span>
                     </div>
                     <div class="card-body">
                         <div class="form-group">
@@ -55,10 +72,9 @@
                 </div>
             </div>
             <div class="col-md-6">
-                <div class="card">
+                <div class="card card-dark">
                     <div class="card-header">
                         <h3 class="card-title">Bank Account Details</h3>
-                        <span id="leadCreatedAt" style="float: right; font-size: 12px;"></span>
                     </div>
                     <div class="card-body">
                         <div class="row">
@@ -88,34 +104,86 @@
         </div>
         <div class="row">
             <div class="col-md-12">
-                <div class="card">
+                <div class="card card-dark card-tabs">
                     <div class="card-header">
-                        <h3 class="card-title">User Withdraw Requests</h3>
-                        <span id="leadCreatedAt" style="float: right; font-size: 12px;"></span>
+                        <ul class="nav nav-tabs" id="custom-tabs-five-tab" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" id="wallet-tab" data-toggle="pill" href="#wallet" role="tab" aria-controls="wallet" aria-selected="true">Wallet</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="bid-history-tab" data-toggle="pill" href="#bid-history" role="tab" aria-controls="bid-history" aria-selected="false">Bid History</a>
+                            </li>
+                        </ul>
                     </div>
                     <div class="card-body">
-                        <table id="dtUserWithdrawRequestsList" class="table table-bordered table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Amount</th>
-                                    <th>Withdraw Request Date</th>
-                                    <th>Updated Date</th>
-                                    <th>Remarks</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="dataList">
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <th>Amount</th>
-                                    <th>Withdraw Request Date</th>
-                                    <th>Updated Date</th>
-                                    <th>Remarks</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </tfoot>
-                        </table>
+                        <div class="tab-content" id="custom-tabs-five-tabContent">
+                            <div class="tab-pane fade show active" id="wallet" role="tabpanel" aria-labelledby="wallet-tab">
+                                <div class="overlay-wrapper">
+                                    <table id="dtUserWalletList" class="table table-bordered table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>S. No.</th>
+                                                <th>Transaction Type</th>
+                                                <th>Amount</th>
+                                                <th>Remaining Balance</th>
+                                                <th>Transaction Date</th>
+                                                <th>Remarks</th>
+                                                <th>Updated Date</th>
+                                                <th>Approval / Rejection Remarks</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="dataWalletList">
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <th>S. No.</th>
+                                                <th>Transaction Type</th>
+                                                <th>Amount</th>
+                                                <th>Remaining Balance</th>
+                                                <th>Transaction Date</th>
+                                                <th>Remarks</th>
+                                                <th>Updated Date</th>
+                                                <th>Approval / Rejection Remarks</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="tab-pane fade" id="bid-history" role="tabpanel" aria-labelledby="bid-history-tab">
+                                <div class="overlay-wrapper">
+                                    <table id="dtUserBidHistoryList" class="table table-bordered table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>S. No.</th>
+                                                <th>Game Name</th>
+                                                <th>Bet Placed On</th>
+                                                <th>Total Bid Amount</th>
+                                                <th>Numbers</th>
+                                                <th>Bet Status</th>
+                                                <th>Total Winnings</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="dataBidHistoryList">
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <th>S. No.</th>
+                                                <th>Game Name</th>
+                                                <th>Bet Placed On</th>
+                                                <th>Total Bid Amount</th>
+                                                <th>Numbers</th>
+                                                <th>Bet Status</th>
+                                                <th>Total Winnings</th>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- /.card-body -->
                     </div>
                 </div>
@@ -140,13 +208,14 @@
 
         $(document).ready(function() {
             fetchUsers()
+            fetchWallet()
         })
 
-        function initializeDTUserWithdrawRequestsList() {
-            $("#dtUserWithdrawRequestsList").DataTable({
+        function initializeDTUserWalletList() {
+            $("#dtUserWalletList").DataTable({
                 "paging": true,
                 "lengthChange": false,
-                "searching": false,
+                "searching": true,
                 "ordering": true,
                 "info": true,
                 "autoWidth": false,
@@ -154,11 +223,51 @@
             })
         }
 
-        async function fetchUsers() {
-            if ($.fn.DataTable.isDataTable("#dtUserWithdrawRequestsList")) {
-                $('#dtUserWithdrawRequestsList').DataTable().destroy()
+        function initializeDTUserBidHistoryList() {
+            $("#dtUserBidHistoryList").DataTable({
+                "paging": true,
+                "lengthChange": false,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "responsive": true,
+            })
+        }
+
+        function calculateFinalBetStatusAndWinningAmount(gameObject) {
+            const {
+                bets
+            } = gameObject;
+
+            let betStatus = '';
+            let winningAmount = 0;
+            let hasWon = false;
+            let allLost = true;
+
+            for (const bet of bets) {
+                if (bet.betStatus === 'won') {
+                    hasWon = true;
+                    winningAmount += Number(bet.winningAmount);
+                }
+                if (bet.betStatus !== 'lost') {
+                    allLost = false;
+                }
             }
 
+            if (hasWon) {
+                betStatus = 'won';
+            } else if (allLost) {
+                betStatus = 'lost';
+            }
+
+            return {
+                betStatus,
+                winningAmount,
+            };
+        }
+
+        async function fetchUsers() {
             await Promise.all([
                 postAPICall({
                     endPoint: "/user/list",
@@ -215,6 +324,71 @@
                 }),
 
                 postAPICall({
+                    endPoint: "/game/list-user-bet",
+                    payload: JSON.stringify({
+                        filter: {
+                            userId,
+                        },
+                        range: {
+                            all: true,
+                        },
+                        sort: [{
+                            orderBy: 'createdAt',
+                            orderDir: 'desc',
+                        }],
+                    }),
+                    callbackComplete: () => {},
+                    callbackSuccess: (response) => {
+                        if (response.success) {
+                            var html = ""
+
+                            for (let i = 0; i < response.data?.length; i++) {
+                                response.data[i] = {
+                                    ...response.data[i],
+                                    ...calculateFinalBetStatusAndWinningAmount(response.data[i])
+                                }
+
+                                html += `<tr class="${response.data[i].betStatus === 'won' ? 'green' : response.data[i].betStatus === 'lost' ? 'red' : ''}">
+                                    <td>${i + 1}</td>
+                                    <td>${response.data[i].game?.name ?? "-"} (${response.data[i].pairType.toUpperCase()})</td>
+                                    <td>${formatDate(response.data[i].bets[0]?.createdAt)}</td>
+                                    <td>₹ ${response.data[i].bets.map((bet) => Number(bet.betAmount)).reduce((acc, curr) => acc + curr, 0)}</td>
+                                    <td><ul>`
+
+                                if (response.data[i].bets?.length) {
+                                    response.data[i].bets.map((bet) => {
+                                        html += `<span class="bet-pair ${bet.betStatus === 'lost' ? 'red' : bet.betStatus === 'won' ? 'green' : ''}">${bet.betNumber} : ₹ ${bet.betAmount}${["won"].indexOf(bet.betStatus) >= 0 ? `<br>${bet.betStatus.toUpperCase()} ₹ ${bet.winningAmount}` : ""}</span>`
+                                    })
+                                }
+
+                                html += `</ul></td>
+                                    <td>${['won', 'lost'].includes(response.data[i].betStatus) ? response.data[i].betStatus.toUpperCase() : ''}</td>
+                                    <td>₹ ${response.data[i].bets.reduce((sum, bet) => {
+                                        return Number(sum) + Number(bet.winningAmount);
+                                    }, 0)}</td>
+                                </tr>`
+                            }
+
+                            document.getElementById("dataBidHistoryList").innerHTML = html
+
+                            if ($.fn.DataTable.isDataTable("#dtUserBidHistoryList")) {
+                                $('#dtUserBidHistoryList').DataTable().destroy()
+                            }
+                            initializeDTUserBidHistoryList()
+                        }
+                        loader.hide()
+                    }
+                }),
+            ])
+        }
+
+        async function fetchWallet() {
+            if ($.fn.DataTable.isDataTable("#dtUserWalletList")) {
+                $('#dtUserWalletList').DataTable().destroy()
+            }
+
+            await Promise.all([
+                postAPICall({
                     endPoint: "/wallet/list",
                     payload: JSON.stringify({
                         filter: {
@@ -225,7 +399,7 @@
                         },
                         sort: [{
                             orderBy: 'walletId',
-                            orderDir: 'asc',
+                            orderDir: 'desc',
                         }],
                     }),
                     callbackComplete: () => {},
@@ -235,27 +409,31 @@
 
                             for (let i = 0; i < response.data?.length; i++) {
                                 html += `<tr>
-                                    <td>₹ ${response.data[i].amount}</td>
+                                    <td>${i + 1}</td>
+                                    <td class="${response.data[i].transactionType === 'credit' ? 'green' : 'red'}">${response.data[i].transactionType.toUpperCase()}</td>
+                                    <td class="${response.data[i].transactionType === 'credit' ? 'green' : 'red'}">₹ ${response.data[i].amount}</td>
+                                    <td>₹ ${response.data[i].remainingBalance}</td>
                                     <td>${formatDate(response.data[i].createdAt)}</td>
+                                    <td>${response.data[i].remarks ?? ""}</td>
                                     <td>${(response.data[i].updatedAt ?? "").trim() !== "" ? formatDate(response.data[i].updatedAt) : ""}</td>
                                     <td>${response.data[i].approvalRemarks ?? ""}</td>
                                     <td>
                                         <div style="display: flex; justify-content: space-around;">
                                             ${response.data[i].approvalStatus === "pending" ? `
-                                            <span onclick="onClickUpdateApprovalStatus(${response.data[i].walletId}, 'approved')"><i class="fa fa-check view-icon"></i></span>
-                                            <span onclick="onClickUpdateApprovalStatus(${response.data[i].walletId}, 'rejected')"><i class="fa fa-times view-icon"></i></span>
-                                            ` : `<span style="color: ${response.data[i].approvalStatus === "approved" ? "green" : "red"}">${response.data[i].approvalStatus.toUpperCase()} </span>`}
+                                            <span class="green" onclick="onClickUpdateApprovalStatus(${response.data[i].walletId}, 'approved')"><i class="fa fa-check view-icon"></i></span>
+                                            <span class="red" onclick="onClickUpdateApprovalStatus(${response.data[i].walletId}, 'rejected')"><i class="fa fa-times view-icon"></i></span>
+                                            ` : `<span class="${response.data[i].approvalStatus === 'approved' ? 'green' : 'red'}">${response.data[i].approvalStatus.toUpperCase()} </span>`}
                                         </div>
                                     </td>
                                 </tr>`
                             }
 
-                            document.getElementById("dataList").innerHTML = html
+                            document.getElementById("dataWalletList").innerHTML = html
 
-                            if ($.fn.DataTable.isDataTable("#dtUserWithdrawRequestsList")) {
-                                $('#dtUserWithdrawRequestsList').DataTable().destroy()
+                            if ($.fn.DataTable.isDataTable("#dtUserWalletList")) {
+                                $('#dtUserWalletList').DataTable().destroy()
                             }
-                            initializeDTUserWithdrawRequestsList()
+                            initializeDTUserWalletList()
                         }
                         loader.hide()
                     }
@@ -288,7 +466,7 @@
                     callbackSuccess: (response) => {
                         if (response.success) {
                             toastr.success(`Transaction ${approvalStatus}!`);
-                            fetchUserWithdrawRequest();
+                            fetchWallet();
                         }
                     }
                 })
