@@ -18,6 +18,7 @@
                 <table id="dtUserWithdrawRequestsList" class="table table-bordered table-hover">
                     <thead>
                         <tr>
+                            <th>S. No.</th>
                             <th>Full Name</th>
                             <th>Mobile</th>
                             <th>Amount</th>
@@ -31,6 +32,7 @@
                     </tbody>
                     <tfoot>
                         <tr>
+                            <th>S. No.</th>
                             <th>Full Name</th>
                             <th>Mobile</th>
                             <th>Amount</th>
@@ -104,6 +106,7 @@
 
                     for (let i = 0; i < response.data?.length; i++) {
                         html += `<tr>
+                            <td>${i + 1}</td>
                             <td>${response.data[i].user?.fullName ?? ""}</td>
                             <td>${response.data[i].user?.mobile ?? ""}</td>
                             <td>${response.data[i].amount}</td>
