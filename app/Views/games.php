@@ -101,14 +101,11 @@
         const otherMinutes = getMinutes(otherTime);
 
         if (currentMinutes > otherMinutes) {
-            console.log(`${currentTime} is later than ${otherTime}`);
             return true
         } else if (currentMinutes < otherMinutes) {
-            console.log(`${currentTime} is earlier than ${otherTime}`);
             return false
         } else {
             return true
-            console.log(`${currentTime} is the same as ${otherTime}`);
         }
     }
 

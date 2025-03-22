@@ -13,11 +13,14 @@ function getJWTToken() {
 }
 
 async function postAPICall({ endPoint, payload, callbackBeforeSend, callbackComplete, callbackSuccess }) {
+    const isFormData = payload instanceof FormData;
+
     $.ajax({
         url: `${BASE_API_PATH}${endPoint}`,
         method: 'POST',
         data: payload ?? {},
-        contentType: 'application/json',
+        contentType: isFormData ? false : 'application/json',
+        processData: !isFormData,
         headers: {
             'Authorization': `Bearer ${getJWTToken()}`
         },
@@ -77,6 +80,15 @@ async function postAPICall({ endPoint, payload, callbackBeforeSend, callbackComp
                 }
 
                 return;
+            }
+
+            if (xhr.responseJSON.status === 401) {
+                toastr.error(errorMessage);
+
+                localStorage.removeItem("jwtToken")
+                localStorage.removeItem("userData")
+
+                window.location.href = "/login";
             }
 
             loader.hide();

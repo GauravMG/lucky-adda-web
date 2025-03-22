@@ -36,6 +36,12 @@
                         <label for="resultTime">Result Time</label>
                         <input type="text" class="form-control" id="resultTime" placeholder="Enter result time in format 13:00">
                     </div>
+                    <div class="form-group">
+                        <label for="gameLogo">Game Logo</label>
+                        <input type="file" class="form-control" id="gameLogo" accept="image/*">
+                        <div id="logoPreview" class="mt-2"></div>
+                        <button type="button" class="btn btn-danger mt-2 d-none" id="removeLogo">Remove Logo</button>
+                    </div>
                     <div class="row">
                         <div class="col-md-12">
                             <div class="card">
@@ -73,11 +79,32 @@
                     } else {
                         echo "";
                     } ?>'
+    let uploadedImage = "";
 
     document.addEventListener("DOMContentLoaded", function() {
         if (gameId !== "") {
             fetchGame()
         }
+
+        document.getElementById("gameLogo").addEventListener("change", function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    uploadedImage = e.target.result;
+                    document.getElementById("logoPreview").innerHTML = `<img src="${uploadedImage}" class="img-fluid" width="150" alt="Game Logo">`;
+                    document.getElementById("removeLogo").classList.remove("d-none");
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        document.getElementById("removeLogo").addEventListener("click", function() {
+            uploadedImage = "";
+            document.getElementById("gameLogo").value = "";
+            document.getElementById("logoPreview").innerHTML = "";
+            this.classList.add("d-none");
+        });
 
         function isValidTimeFormat(time) {
             return /^([01]\d|2[0-3]):([0-5]\d)$/.test(time); // Ensures HH:MM format
@@ -161,10 +188,31 @@
                         document.getElementById("startTime").value = data.startTime
                         document.getElementById("endTime").value = data.endTime
                         document.getElementById("resultTime").value = data.resultTime
+                        uploadedImage = data.logo
                     }
 
                     loader.hide()
                 }
+            })
+        }
+
+        async function uploadImage(file) {
+            const formData = new FormData();
+            formData.append("file", file);
+
+            return await new Promise((resolve, reject) => {
+                postAPICall({
+                    endPoint: "/upload/single",
+                    payload: formData,
+                    callbackSuccess: (response) => {
+                        console.log(`response`, response)
+                        if (response.success) {
+                            resolve(response.data.url)
+                        } else {
+                            reject("")
+                        }
+                    }
+                })
             })
         }
 
@@ -173,10 +221,11 @@
 
             const name = document.getElementById("name").value.trim();
             const city = "-";
-            const logo = "https://lucky-adda.com/api/app-logo.png";
+            let logo = (uploadedImage ?? "").trim() !== "" ? uploadedImage : "https://lucky-adda.com/api/app-logo.png";
             const startTime = document.getElementById("startTime").value;
             const endTime = document.getElementById("endTime").value;
             const resultTime = document.getElementById("resultTime").value;
+            const fileInput = document.getElementById("gameLogo");
 
             if (!name) {
                 toastr.error("Please enter a valid name!");
@@ -198,18 +247,32 @@
                 return;
             }
 
+            if (fileInput.files.length > 0) {
+                logo = await uploadImage(fileInput.files[0]);
+            }
+
+            let payload = {
+                name,
+                city,
+                logo,
+                startTime,
+                endTime,
+                resultTime
+            }
+            if ((logo ?? "").trim() !== "") {
+                payload = {
+                    ...payload,
+                    logo
+                }
+            }
+
             if (gameId !== "") {
                 if (confirm("Are you sure you want to edit this game?")) {
                     await postAPICall({
                         endPoint: "/game/update",
                         payload: JSON.stringify({
                             gameId: Number(gameId),
-                            name,
-                            city,
-                            logo,
-                            startTime,
-                            endTime,
-                            resultTime
+                            ...payload
                         }),
                         callbackSuccess: (response) => {
                             if (response.success) {
@@ -224,12 +287,7 @@
                     await postAPICall({
                         endPoint: "/game/create",
                         payload: JSON.stringify({
-                            name,
-                            city,
-                            logo,
-                            startTime,
-                            endTime,
-                            resultTime
+                            ...payload
                         }),
                         callbackSuccess: (response) => {
                             if (response.success) {
