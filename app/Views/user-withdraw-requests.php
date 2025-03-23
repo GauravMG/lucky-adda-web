@@ -4,6 +4,29 @@
 <link rel="stylesheet" href="<?= base_url('assets/adminlte/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css'); ?>">
 <link rel="stylesheet" href="<?= base_url('assets/adminlte/plugins/datatables-responsive/css/responsive.bootstrap4.min.css'); ?>">
 <link rel="stylesheet" href="<?= base_url('assets/adminlte/plugins/datatables-buttons/css/buttons.bootstrap4.min.css'); ?>">
+
+<style>
+    .red {
+        color: red;
+    }
+
+    .green {
+        color: green;
+    }
+
+    .image-icon {
+        cursor: pointer;
+        font-size: 24px;
+        /* Increase icon size */
+        color: #343a40;
+        /* Set icon color */
+        margin-left: 10px;
+    }
+
+    .image-icon:hover {
+        color: #535c65;
+    }
+</style>
 <?= $this->endSection(); ?>
 
 <?= $this->section('content'); ?>
@@ -49,6 +72,47 @@
         <!-- /.card -->
     </div>
     <!-- /.col -->
+
+    <!-- Modal for Remarks and File Upload -->
+    <div class="modal fade" id="remarksModal" tabindex="-1" role="dialog" aria-labelledby="remarksModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="remarksModalLabel">Rejection Remarks</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="walletIdInput">
+                    <textarea id="remarksInput" class="form-control" placeholder="Enter remarks..." required></textarea>
+                    <br>
+                    <label for="imageInput">Upload Image (Optional):</label>
+                    <input type="file" id="imageInput" class="form-control" accept="image/*">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" onclick="submitRejection()">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="imagePreviewModal" tabindex="-1" role="dialog" aria-labelledby="imagePreviewModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="imagePreviewModalLabel">Image Preview</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body text-center">
+                    <img id="previewImage" src="" class="img-fluid" style="max-width: 100%;" />
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 <?= $this->endSection(); ?>
 
@@ -77,6 +141,11 @@
             "autoWidth": false,
             "responsive": true,
         })
+    }
+
+    function showImage(imageUrl) {
+        $("#previewImage").attr("src", imageUrl);
+        $("#imagePreviewModal").modal("show");
     }
 
     async function fetchUserWithdrawRequest() {
@@ -112,12 +181,21 @@
                             <td>${response.data[i].amount}</td>
                             <td>${formatDate(response.data[i].createdAt)}</td>
                             <td>${(response.data[i].updatedAt ?? "").trim() !== "" ? formatDate(response.data[i].updatedAt) : ""}</td>
-                            <td>${response.data[i].approvalRemarks ?? ""}</td>
+                            <td>
+                                <div style="display: flex; justify-content: space-between;">
+                                    <span>${response.data[i].approvalRemarks ?? ""}</span>
+                                    ${(response.data[i].imageUrl ?? "").trim() !== "" ? `
+                                        <span onclick="showImage('${response.data[i].imageUrl}')">
+                                            <i class="fa fa-image view-icon image-icon"></i>
+                                        </span>
+                                    ` : ""}
+                                </div>
+                            </td>
                             <td>
                                 <div style="display: flex; justify-content: space-around;">
                                     ${response.data[i].approvalStatus === "pending" ? `
-                                    <span onclick="onClickUpdateApprovalStatus(${response.data[i].walletId}, 'approved')"><i class="fa fa-check view-icon"></i></span>
-                                    <span onclick="onClickUpdateApprovalStatus(${response.data[i].walletId}, 'rejected')"><i class="fa fa-times view-icon"></i></span>
+                                    <span class="green" onclick="onClickUpdateApprovalStatus(${response.data[i].walletId}, 'approved')"><i class="fa fa-check view-icon"></i></span>
+                                    <span class="red" onclick="onClickUpdateApprovalStatus(${response.data[i].walletId}, 'rejected')"><i class="fa fa-times view-icon"></i></span>
                                     ` : `<span style="color: ${response.data[i].approvalStatus === "approved" ? "green" : "red"}">${response.data[i].approvalStatus.toUpperCase()} </span>`}
                                 </div>
                             </td>
@@ -137,30 +215,62 @@
     }
 
     async function onClickUpdateApprovalStatus(walletId, approvalStatus) {
-        let approvalRemarks = "";
-
         // Ask for remarks if the status is 'rejected'
         if (approvalStatus === "rejected") {
-            approvalRemarks = prompt("Please enter remarks for rejection:");
+            $("#walletIdInput").val(walletId);
+            $("#remarksInput").val("");
+            $("#imageInput").val("");
+            $("#remarksModal").modal("show");
+        } else {
+            processApproval(walletId, approvalStatus)
+        }
+    }
 
-            // If user cancels or enters an empty remark, stop the process
-            if (approvalRemarks === null || approvalRemarks.trim() === "") {
-                toastr.error("Remarks are required for rejection!");
-                return;
+    async function submitRejection() {
+        const walletId = $("#walletIdInput").val();
+        const approvalRemarks = $("#remarksInput").val();
+        const fileInput = document.getElementById("imageInput");
+
+        let additionalPayload = {}
+
+        if (!approvalRemarks.trim()) {
+            toastr.error("Remarks are required for rejection!");
+            return;
+        }
+
+        additionalPayload = {
+            ...additionalPayload,
+            approvalRemarks
+        }
+
+        if (fileInput.files.length > 0) {
+            const imageUrl = await uploadImage(fileInput.files[0]);
+            additionalPayload = {
+                ...additionalPayload,
+                imageUrl
             }
         }
 
+        processApproval(walletId, "rejected", additionalPayload)
+    }
+
+    async function processApproval(walletId, approvalStatus, additionalPayload = {}) {
         if (confirm(`Are you sure you want to ${approvalStatus === "approved" ? "approve" : "reject"} this transaction?`)) {
             await postAPICall({
                 endPoint: "/wallet/update",
                 payload: JSON.stringify({
-                    walletId,
+                    walletId: parseInt(walletId),
                     approvalStatus,
-                    approvalRemarks
+                    ...additionalPayload
                 }),
                 callbackSuccess: (response) => {
                     if (response.success) {
                         toastr.success(`Transaction ${approvalStatus}!`);
+
+                        if (approvalStatus === "rejected") {
+                            $("#remarksModal").modal("hide");
+                        }
+
                         fetchUserWithdrawRequest();
                     }
                 }

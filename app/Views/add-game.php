@@ -196,26 +196,6 @@
             })
         }
 
-        async function uploadImage(file) {
-            const formData = new FormData();
-            formData.append("file", file);
-
-            return await new Promise((resolve, reject) => {
-                postAPICall({
-                    endPoint: "/upload/single",
-                    payload: formData,
-                    callbackSuccess: (response) => {
-                        console.log(`response`, response)
-                        if (response.success) {
-                            resolve(response.data.url)
-                        } else {
-                            reject("")
-                        }
-                    }
-                })
-            })
-        }
-
         async function onClickSubmit() {
             if (!await validateTimeFields()) return;
 
