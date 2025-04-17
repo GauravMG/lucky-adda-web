@@ -14,17 +14,13 @@
 </head>
 
 <body>
+  <p>Payment successful! Tap below to return to the app.</p>
+  <button id="openAppBtn" style="display: none;">Open App</button>
 
   <script>
-    window.onload = function() {
-      // This will try to open the app using the deep link
+    document.getElementById('openAppBtn').addEventListener('click', function() {
       window.location.href = "luckyadda://payment-callback";
-
-      // Optionally, fallback to app store if not installed (with timeout)
-      // setTimeout(() => {
-      //   window.location.href = "https://yourdomain.com/app-download";
-      // }, 3000);
-    };
+    });
   </script>
 
 </body>
