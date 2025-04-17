@@ -21,14 +21,13 @@
 
   <script>
     $(document).ready(function() {
-      function redirectToApp() {
-        document.getElementById('openAppBtn').addEventListener('click', function() {
-          window.location.href = "luckyadda://payment-callback";
-        });
-      }
+      $('#openAppBtn').on('click', function() {
+        window.location.href = "luckyadda://payment-callback";
+      });
 
-      redirectToApp()
-    })
+      // Auto-click on page load
+      $('#openAppBtn').trigger('click');
+    });
   </script>
 
 </body>
