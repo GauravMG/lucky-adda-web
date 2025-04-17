@@ -17,6 +17,8 @@
   <p>Payment successful! Tap below to return to the app.</p>
   <button id="openAppBtn" style="display: none;">Open App</button>
 
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
   <script>
     $(document).ready(function() {
       function redirectToApp() {
