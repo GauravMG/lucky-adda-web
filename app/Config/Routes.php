@@ -6,6 +6,8 @@ use CodeIgniter\Router\RouteCollection;
  * @var RouteCollection $routes
  */
 
+$routes->get('/payment-response', 'WebController::paymentResponse');
+
 $routes->get('/app-settings', 'AdminController::appSettings');
 
 $routes->get('/user-withdraw-requests', 'AdminController::userWithdrawRequests');
