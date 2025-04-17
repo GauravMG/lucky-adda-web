@@ -27,6 +27,11 @@
 
       // Auto-click on page load
       $('#openAppBtn').trigger('click');
+
+      // Close the page after a short delay
+      setTimeout(function() {
+        window.close();
+      }, 2000); // waits 1 second before trying to close
     });
   </script>
 
