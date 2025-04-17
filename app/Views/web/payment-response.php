@@ -18,9 +18,15 @@
   <button id="openAppBtn" style="display: none;">Open App</button>
 
   <script>
-    document.getElementById('openAppBtn').addEventListener('click', function() {
-      window.location.href = "luckyadda://payment-callback";
-    });
+    $(document).ready(function() {
+      function redirectToApp() {
+        document.getElementById('openAppBtn').addEventListener('click', function() {
+          window.location.href = "luckyadda://payment-callback";
+        });
+      }
+
+      redirectToApp()
+    })
   </script>
 
 </body>
