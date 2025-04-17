@@ -28,10 +28,11 @@
       // Auto-click on page load
       $('#openAppBtn').trigger('click');
 
-      // Close the page after a short delay
+      // Fallback to close after a short delay
       setTimeout(function() {
-        window.close();
-      }, 2000); // waits 1 second before trying to close
+        // Attempt to close the tab (may work in WebView or popup window)
+        window.open('', '_self')?.close();
+      }, 1500); // Adjust timing if needed
     });
   </script>
 
