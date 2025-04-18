@@ -28,8 +28,8 @@
       // Try closing after a delay (for WebView/popup/tab)
       setTimeout(function() {
         alert(`Taking you back to app...`)
-        window.open('', '_self')?.close(); // Tries to close the current tab
-      }, 1500);
+        window.close();
+      }, 1000);
     });
   </script>
 
