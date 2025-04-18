@@ -27,9 +27,14 @@
 
       // Try closing after a delay (for WebView/popup/tab)
       setTimeout(function() {
-        alert(`Taking you back to app...`)
+        // alert(`Taking you back to app...`)
         // window.close();
-        window.open('', '_self')?.close();
+        // window.open('', '_self')?.close();
+        document.body.innerHTML = `
+          <p>If you are not redirected automatically,</p>
+          <a href="luckyadda://payment-callback">Tap here to open the app</a>
+          <p>You can now close this tab manually.</p>
+        `;
       }, 1000);
     });
   </script>
