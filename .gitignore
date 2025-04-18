@@ -37,6 +37,7 @@ public/uploads/*
 # Exclude built assets if using a build tool
 public/assets/build/
 public/assets/*.map
+public/*.apk
 
 */config/development
 */logs/log-*.php
