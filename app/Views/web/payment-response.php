@@ -25,14 +25,10 @@
         window.location.href = "luckyadda://payment-callback";
       });
 
-      // Auto-click on page load
-      $('#openAppBtn').trigger('click');
-
-      // Fallback to close after a short delay
+      // Try closing after a delay (for WebView/popup/tab)
       setTimeout(function() {
-        // Attempt to close the tab (may work in WebView or popup window)
-        window.open('', '_self')?.close();
-      }, 1500); // Adjust timing if needed
+        window.open('', '_self')?.close(); // Tries to close the current tab
+      }, 1500);
     });
   </script>
 
