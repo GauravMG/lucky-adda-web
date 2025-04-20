@@ -22,7 +22,9 @@ async function postAPICall({ endPoint, payload, callbackBeforeSend, callbackComp
         contentType: isFormData ? false : 'application/json',
         processData: !isFormData,
         headers: {
-            'Authorization': `Bearer ${getJWTToken()}`
+            'Authorization': `Bearer ${getJWTToken()}`,
+            "devicetype": "web",
+            "versionnumber": "1.0.0"
         },
         beforeSend: callbackBeforeSend ?? function () {
             loader.show();
