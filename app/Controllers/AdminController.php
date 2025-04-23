@@ -6,7 +6,49 @@ class AdminController extends BaseController
 {
     public function index(): string
     {
-        return $this->games();
+        return $this->dashboard();
+    }
+
+    public function dashboard(): string
+    {
+        $data = [
+            'title' => 'Dashboard',
+            'page_heading' => 'Dashboard'
+        ];
+
+        return view('dashboard', $data);
+    }
+
+    public function reportBetsByNumbers(): string
+    {
+        $gameId = $this->request->getGet('gameId');
+
+        $data = [
+            'title' => 'Report - Bets By Numbers',
+            'page_heading' => 'Report - Bets By Numbers',
+            'data' => [
+                'gameId' => $gameId
+            ]
+        ];
+
+        return view('report-bets-by-numbers', $data);
+    }
+
+    public function reportBetsByUsers(): string
+    {
+        $gameId = $this->request->getGet('gameId');
+        $number = $this->request->getGet('number');
+
+        $data = [
+            'title' => 'Report - Bets By Users',
+            'page_heading' => 'Report - Bets By Users',
+            'data' => [
+                'gameId' => $gameId,
+                'number' => $number
+            ]
+        ];
+
+        return view('report-bets-by-users', $data);
     }
 
     public function games(): string

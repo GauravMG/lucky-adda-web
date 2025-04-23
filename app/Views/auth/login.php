@@ -153,7 +153,7 @@
     <script>
         const jwtToken = localStorage.getItem("jwtToken")
         if ((jwtToken ?? "").trim() !== "") {
-            window.location.href = "/games"
+            window.location.href = "/dashboard"
         }
 
         var isResend = false
@@ -213,7 +213,7 @@
                 },
                 success: function(response) {
                     if (response.success) {
-                        if (Number(response.data.roleId) !== 1) {
+                        if (response.data.roleId && Number(response.data.roleId) !== 1) {
                             toastr.error(`You are not authorized to login!`);
                             return
                         }
@@ -287,6 +287,12 @@
                 complete: function() {},
                 success: function(response) {
                     if (response.success) {
+                        if (response.data.roleId && parseInt(response.data.roleId) !== 1) {
+                            loader.hide();
+                            toastr.error("Unauthorized access! Only admin can access dashboard.");
+                            return
+                        }
+
                         if (isForgotPassword) {
                             loader.hide()
 
@@ -309,7 +315,7 @@
                             setTimeout(() => {
                                 loader.hide()
                                 toastr.success(`Logged in successfully!`);
-                                window.location.href = "/games"
+                                window.location.href = "/dashboard"
                             }, [1000])
                         }
                     }
@@ -376,7 +382,7 @@
                         setTimeout(() => {
                             loader.hide()
                             toastr.success(`Password updated successfully!`);
-                            window.location.href = "/games"
+                            window.location.href = "/dashboard"
                         }, [1000])
                     }
                 },
