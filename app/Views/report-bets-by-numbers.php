@@ -15,38 +15,7 @@
 <?= $this->endSection(); ?>
 
 <?= $this->section('content'); ?>
-<div class="row">
-    <div class="col-12">
-        <div class="card card-dark">
-            <div class="card-header">
-                <h3 class="card-title">All Bets Placed On Numbers</h3>
-            </div>
-            <!-- /.card-header -->
-            <div class="card-body">
-                <table id="dtGamesList" class="table table-bordered table-hover">
-                    <thead>
-                        <tr>
-                            <th>Number</th>
-                            <th>Total Bets Placed</th>
-                            <th>Total Bet Amount</th>
-                        </tr>
-                    </thead>
-                    <tbody id="dataList">
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <th>Number</th>
-                            <th>Total Bets Placed</th>
-                            <th>Total Bet Amount</th>
-                        </tr>
-                    </tfoot>
-                </table>
-            </div>
-            <!-- /.card-body -->
-        </div>
-        <!-- /.card -->
-    </div>
-    <!-- /.col -->
+<div class="row" id="betsByNumbersContainer">
 </div>
 <?= $this->endSection(); ?>
 
@@ -62,123 +31,53 @@
 <script src="<?= base_url('assets/adminlte/plugins/datatables-buttons/js/buttons.colVis.min.js'); ?>"></script>
 
 <script>
+    let gameId = '<?= $data["gameId"] ?? ""; ?>'
+    if ((gameId ?? "").toString().trim() !== "" && !["undefined", "null"].includes(gameId)) {
+        gameId = parseInt(gameId.toString())
+    } else {
+        gameId = null
+    }
+
     $(document).ready(function() {
-        // fetchGames()
+        fetchBetsByNumbers()
     })
 
-    function initializeDTGamesList() {
-        $("#dtGamesList").DataTable({
-            "paging": true,
-            "lengthChange": false,
-            "searching": true,
-            "ordering": true,
-            "info": true,
-            "autoWidth": false,
-            "responsive": true,
-        })
-    }
-
-    function compareTime(currentTime, otherTime) {
-        // Convert "HH:mm" to total minutes
-        const getMinutes = (time) => {
-            const [hours, minutes] = time.split(':').map(Number);
-            return hours * 60 + minutes;
-        };
-
-        const currentMinutes = getMinutes(currentTime);
-        const otherMinutes = getMinutes(otherTime);
-
-        if (currentMinutes > otherMinutes) {
-            return true
-        } else if (currentMinutes < otherMinutes) {
-            return false
-        } else {
-            return true
-        }
-    }
-
-    async function fetchGames() {
-        if ($.fn.DataTable.isDataTable("#dtGamesList")) {
-            $('#dtGamesList').DataTable().destroy()
+    async function fetchBetsByNumbers() {
+        let payload = {
+            filter: {
+                gameId
+            }
         }
 
         await postAPICall({
-            endPoint: "/game/list",
-            payload: JSON.stringify({
-                "filter": {},
-                "range": {
-                    "all": true
-                },
-                "sort": [{
-                    "orderBy": "startTime",
-                    "orderDir": "asc"
-                }]
-            }),
+            endPoint: "/report/bets-by-numbers",
+            payload: JSON.stringify(payload),
             callbackComplete: () => {},
             callbackSuccess: (response) => {
                 if (response.success) {
                     var html = ""
 
-                    const now = new Date();
-                    const hours = String(now.getHours()).padStart(2, '0'); // Get hours and pad with leading zero if necessary
-                    const minutes = String(now.getMinutes()).padStart(2, '0'); // Get minutes and pad with leading zero if necessary
-                    const currentTime = `${hours}:${minutes}`;
-
                     for (let i = 0; i < response.data?.length; i++) {
-                        html += `<tr>
-                            <td><img class="logo" src="${response.data[i].logo}" alt="${response.data[i].name}" /></td>
-                            <td>${response.data[i].name}</td>
-                            <td>${response.data[i].startTime}</td>
-                            <td>${response.data[i].endTime}</td>
-                            <td>${response.data[i].resultTime}</td>
-                            <td>
-                                <div style="display: flex; justify-content: space-around;">
-                                    ${compareTime(currentTime, response.data[i].resultTime)  ? `<!-- <span onclick="onClickViewGame(${response.data[i].gameId})"><i class="fa fa-bullhorn view-icon"></i></span> -->` : "<!-- <span>&nbsp;&nbsp;&nbsp;&nbsp;</span> -->"}
-                                    <span onclick="onClickViewGame(${response.data[i].gameId})"><i class="fa fa-bullhorn view-icon"></i></span>
-                                    <span onclick="onClickViewGameResultChart(${response.data[i].gameId})"><i class="fa fa-file-alt view-icon"></i></span>
-                                    <span onclick="onClickEditGame(${response.data[i].gameId})"><i class="fa fa-edit view-icon"></i></span>
-                                    <span onclick="onClickDeleteGame(${response.data[i].gameId})"><i class="fa fa-trash view-icon"></i></span>
+                        let item = response.data[i]
+
+                        html += `<div class="col-md-3 col-sm-6 col-12">
+                            <div class="info-box shadow border border-dark">
+                                <span class="info-box-icon bg-secondary">${item.number}</span>
+                                <div class="info-box-content">
+                                    <span class="info-box-number">Total Bets Placed : ${item.totalBetsPlaced}</span>
+                                    <span class="info-box-number">Total Bet Amount : ₹ ${item.totalBetAmount}</span>
                                 </div>
-                            </td>
-                        </tr>`
+
+                            </div>
+
+                        </div>`
                     }
 
-                    document.getElementById("dataList").innerHTML = html
-
-                    initializeDTGamesList()
+                    document.getElementById("betsByNumbersContainer").innerHTML = html
                 }
                 loader.hide()
             }
         })
-    }
-
-    function onClickViewGame(gameId) {
-        window.location.href = `/games/anounce-result/${gameId}`
-    }
-
-    function onClickViewGameResultChart(gameId) {
-        window.location.href = `/games/result-chart/${gameId}`
-    }
-
-    function onClickEditGame(gameId) {
-        window.location.href = `/games/edit/${gameId}`
-    }
-
-    async function onClickDeleteGame(gameId) {
-        if (confirm("Are you sure you want to delete this game?")) {
-            await postAPICall({
-                endPoint: "/game/delete",
-                payload: JSON.stringify({
-                    gameIds: [Number(gameId)]
-                }),
-                callbackSuccess: (response) => {
-                    if (response.success) {
-                        toastr.success("Game deleted successfully!")
-                        fetchGames();
-                    }
-                }
-            })
-        }
     }
 </script>
 <?= $this->endSection(); ?>
