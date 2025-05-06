@@ -1232,7 +1232,7 @@
             <!-- <a href="#download" class="btn btn-primary">
               <i class="fab fa-apple me-2"></i> Download for iOS
             </a> -->
-            <a href="/lucky-adda.apk" class="btn btn-primary">
+            <a href="/lucky-adda.apk" class="btn btn-primary android-download-link">
               <i class="fab fa-android me-2"></i> Download for Android
             </a>
           </div>
@@ -1606,7 +1606,7 @@
                 <strong>Google Play</strong>
               </span>
             </a> -->
-            <a href="/lucky-adda.apk" class="store-badge">
+            <a href="/lucky-adda.apk" class="store-badge android-download-link">
               <i class="fab fa-google-play"></i>
               <span>
                 <small>Download for</small>
@@ -1693,6 +1693,18 @@
 
   <!-- Custom JavaScript -->
   <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const refCode = urlParams.get("referral-code");
+    alert(`referral code - ${refCode}`)
+    if (refCode) {
+      localStorage.setItem("referral_code", refCode);
+
+      document.querySelectorAll('.android-download-link').forEach(el => {
+        const currentHref = el.getAttribute('href');
+        el.setAttribute('href', currentHref + `?referral_code=${refCode}`);
+      });
+    }
+
     // Initialize AOS animation library
     AOS.init({
       duration: 800,
