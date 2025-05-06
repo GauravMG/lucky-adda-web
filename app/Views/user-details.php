@@ -35,6 +35,57 @@
     .image-icon:hover {
         color: #535c65;
     }
+
+    /* Switch container */
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 50px;
+        height: 24px;
+    }
+
+    /* Hide default checkbox */
+    .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    /* Slider */
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        transition: 0.4s;
+        border-radius: 34px;
+    }
+
+    /* Circle inside the slider */
+    .slider::before {
+        position: absolute;
+        content: "";
+        height: 18px;
+        width: 18px;
+        left: 3px;
+        bottom: 3px;
+        background-color: white;
+        transition: 0.4s;
+        border-radius: 50%;
+    }
+
+    /* Checked state */
+    input:checked+.slider {
+        background-color: #28a745;
+        /* Green */
+    }
+
+    input:checked+.slider::before {
+        transform: translateX(26px);
+    }
 </style>
 <?= $this->endSection(); ?>
 
@@ -108,6 +159,53 @@
                             <div class="form-group col-md-6">
                                 <label for="name">IFSC Code</label>
                                 <input type="text" class="form-control" id="ifscCode" placeholder="Enter IFSC code" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card card-dark">
+                    <div class="card-header">
+                        <h3 class="card-title">Password</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <input type="text" class="form-control" id="password" placeholder="Enter password" readonly>
+                        </div>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="card card-dark">
+                    <div class="card-header">
+                        <h3 class="card-title">Wallet</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="totalBalance">Available Balance</label>
+                                    <input type="text" class="form-control" id="totalBalance" placeholder="" readonly>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>&nbsp;</label>
+                                    <button type="button" class="btn btn-primary form-control" onclick="onClickManageBalance('credit')">Add Balance</button>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>&nbsp;</label>
+                                    <button type="button" class="btn btn-primary form-control" onclick="onClickManageBalance('debit')">Deduct Balance</button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -204,7 +302,48 @@
         </div>
         <!-- /.col -->
 
-        <!-- Modal for Remarks and File Upload -->
+        <!-- Modal -->
+        <div class="modal fade" id="balanceModal" tabindex="-1" role="dialog" aria-labelledby="balanceModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="balanceModalLabel"></h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" id="transactionTypeInput">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="transactionAmountInput">Amount</label>
+                                <input type="number" class="form-control" id="transactionAmountInput" placeholder="" required>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="transactionRemarksInput">Remarks</label>
+                                <textarea id="transactionRemarksInput" class="form-control" placeholder="Enter remarks..." required></textarea>
+                            </div>
+                        </div>
+                        <div class="col-md-12" id="transactionAddDepositBonusContainer" style="display: none;">
+                            <div class="form-group form-check" style="padding: unset !important">
+                                <label class="switch">
+                                    <input type="checkbox" class="toggle-status" id="transactionAddDepositBonusInput">
+                                    <span class="slider"></span>
+                                </label>
+                                <label for="transactionAddDepositBonusInput" id="depositBonusLabel" class="ml-2" style="cursor: pointer">Add Deposit Bonus</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-primary" onclick="submitTransaction()">Submit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="modal fade" id="remarksModal" tabindex="-1" role="dialog" aria-labelledby="remarksModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
@@ -343,6 +482,8 @@
                             document.getElementById("fullName").value = data.fullName
                             document.getElementById("mobile").value = data.mobile
                             document.getElementById("dob").value = formatDateWithoutTime(data.dob)
+
+                            document.getElementById("password").value = data.password
                         }
                         loader.hide()
                     }
@@ -464,6 +605,8 @@
                     callbackComplete: () => {},
                     callbackSuccess: (response) => {
                         if (response.success) {
+                            document.getElementById("totalBalance").value = `₹ ${response.stats.totalbalance}`
+
                             var html = ""
 
                             for (let i = 0; i < response.data?.length; i++) {
@@ -565,6 +708,71 @@
                             if (approvalStatus === "rejected") {
                                 $("#remarksModal").modal("hide");
                             }
+
+                            fetchWallet();
+                        }
+                    }
+                })
+            }
+        }
+
+        function onClickManageBalance(transactionType) {
+            $("#balanceModal").modal("show");
+
+            $("#balanceModalLabel").text(transactionType === "credit" ? "Add Balance" : "Deduct Balance")
+            $("#transactionTypeInput").val(transactionType)
+            document.getElementById("transactionAddDepositBonusContainer").style.display = transactionType === "credit" ? "block" : "none"
+        }
+
+        async function submitTransaction() {
+            const transactionType = $("#transactionTypeInput").val();
+            const transactionAmount = $("#transactionAmountInput").val();
+            const transactionRemarks = $("#transactionRemarksInput").val();
+            const isAddDepositBonus = document.getElementById('transactionAddDepositBonusInput')?.checked ?? false
+
+            let additionalPayload = {
+                userId,
+                transactionType,
+                approvalStatus: "approved"
+            }
+
+            if (!transactionAmount.trim()) {
+                toastr.error(`Please enter amount to ${transactionType}!`);
+                return;
+            }
+
+            if (!transactionRemarks.trim()) {
+                toastr.error("Please enter remarks!");
+                return;
+            }
+
+            additionalPayload = {
+                ...additionalPayload,
+                amount: transactionAmount,
+                remarks: transactionRemarks,
+                isAddDepositBonus
+            }
+
+            processTransaction(additionalPayload)
+        }
+
+        async function processTransaction(additionalPayload) {
+            if (confirm(`Are you sure you want to proceed with this transaction?`)) {
+                await postAPICall({
+                    endPoint: "/wallet/create",
+                    payload: JSON.stringify({
+                        ...additionalPayload
+                    }),
+                    callbackSuccess: (response) => {
+                        if (response.success) {
+                            toastr.success(`Amount ${additionalPayload.transactionType}ed!`);
+
+                            $("#balanceModal").modal("hide");
+
+                            $("#transactionTypeInput").val("");
+                            $("#transactionAmountInput").val("");
+                            $("#transactionRemarksInput").val("");
+                            document.getElementById('transactionAddDepositBonusInput').checked = false
 
                             fetchWallet();
                         }
