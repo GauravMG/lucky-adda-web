@@ -101,41 +101,43 @@
                                         </li>
                                         <li class="nav-item bet-details-item-container">
                                             <a class="nav-link no-style-link">
-                                                Overall Profit <span class="float-right badge bg-success">₹ ${item.totalProfit}</span>
+                                                Overall Profit/Loss <span class="float-right badge${item.totalProfit.toString().includes("-") ? " bg-danger" : " bg-success"}">₹ ${item.totalProfit}</span>
                                             </a>
                                         </li>
                                     </ul>
 
-                                    ${(item.resultNumber || item.maxBetAmountNumber) ? `<div class="row border-bottom">
-                                        ${item.resultNumber ? `<div class="col-sm-6 border-right">
-                                            <a href="/report/bets-by-users?gameId=${item.gameId}&number=${item.resultNumber}" class="no-style-link">
+                                    <div class="row border-bottom">
+                                        <div class="col-sm-6 border-right">
+                                            ${(item.resultNumber ?? "").toString().trim() !== "" ? `<a href="/report/bets-by-users?gameId=${item.gameId}&number=${item.resultNumber}" class="no-style-link">` : ""}
                                                 <div class="description-block">
-                                                    <h5 class="description-header">${item.resultNumber}</h5>
-                                                    <span class="description-text">Winning Number <i class="fas fa-arrow-circle-right"></i></span>
+                                                    <h5 class="description-header">${(item.resultNumber ?? "").toString().trim() !== "" ? item.resultNumber : "N/A"}</h5>
+                                                    <span class="description-text">Winning Number${(item.resultNumber ?? "").toString().trim() !== "" ? ` <i class="fas fa-arrow-circle-right"></i>` : ""}</span>
                                                 </div>
-                                            </a>
+                                            ${(item.resultNumber ?? "").toString().trim() !== "" ? `</a>` : ""}
 
-                                        </div>` : ""}
-
-                                        ${item.maxBetAmountNumber ? `<div class="col-sm-6">
-                                            <a href="/report/bets-by-users?gameId=${item.gameId}&number=${item.maxBetAmountNumber}" class="no-style-link">
-                                                <div class="description-block">
-                                                    <h5 class="description-header">${item.maxBetAmountNumber}</h5>
-                                                    <span class="description-text">Max Bet Amount Placed On <i class="fas fa-arrow-circle-right"></i></span>
-                                                </div>
-                                            </a>
-
-                                        </div>` : ""}
-
-                                    </div>` : ""}
-
-                                    ${(item.resultNumber || item.maxBetAmountNumber) ? `<div class="col-12 mt-2">
-                                        <div class="small-box mb-2 bg-secondary">
-                                            <a href="/report/bets-by-numbers?gameId=${item.gameId}" class="small-box-footer">
-                                                View analytics for all numbers <i class="fas fa-arrow-circle-right"></i>
-                                            </a>
                                         </div>
-                                    </div>` : ""}
+
+                                        <div class="col-sm-6">
+                                            ${(item.maxBetAmountNumber ?? "").toString().trim() !== "" ? `<a href="/report/bets-by-users?gameId=${item.gameId}&number=${item.maxBetAmountNumber}" class="no-style-link">` : ""}
+                                                <div class="description-block">
+                                                    <h5 class="description-header">${(item.maxBetAmountNumber ?? "").toString().trim() !== "" ? item.maxBetAmountNumber : "N/A"}</h5>
+                                                    <span class="description-text">Max Bet Amount Placed On${(item.maxBetAmountNumber ?? "").toString().trim() !== "" ? `    <i class="fas fa-arrow-circle-right"></i>` : ""}</span>
+                                                </div>
+                                            ${(item.maxBetAmountNumber ?? "").toString().trim() !== "" ? `</a>` : ""}
+
+                                        </div>
+
+                                    </div>
+
+                                    <div class="col-12 mt-2">
+                                        <div class="small-box mb-2 bg-secondary">
+                                            ${(item.resultNumber ?? "").toString().trim() !== "" || (item.maxBetAmountNumber ?? "").toString().trim() !== "" ? `<a href="/report/bets-by-numbers?gameId=${item.gameId}" class="small-box-footer">` : ""}
+                                                <div class="small-box-footer">
+                                                    View analytics for all numbers${(item.resultNumber ?? "").toString().trim() !== "" || (item.maxBetAmountNumber ?? "").toString().trim() !== "" ? ` <i class="fas fa-arrow-circle-right"></i>` : ""}
+                                                </div>
+                                            ${(item.resultNumber ?? "").toString().trim() !== "" || (item.maxBetAmountNumber ?? "").toString().trim() !== "" ? `</a>` : ""}
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 

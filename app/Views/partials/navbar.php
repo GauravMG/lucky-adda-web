@@ -14,8 +14,11 @@
         <li class="nav-item d-none d-sm-inline-block">
             <a href="/result-chart" class="nav-link">Result Chart</a>
         </li>
-        <li class="nav-item d-none d-sm-inline-block">
+        <!-- <li class="nav-item d-none d-sm-inline-block">
             <a href="/user-withdraw-requests" class="nav-link">User Withdraw Requests</a>
+        </li> -->
+        <li class="nav-item d-none d-sm-inline-block">
+            <a href="/transactions" class="nav-link">All Transactions</a>
         </li>
         <li class="nav-item d-none d-sm-inline-block">
             <a href="/app-settings" class="nav-link">App Settings</a>

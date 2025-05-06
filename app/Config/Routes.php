@@ -10,7 +10,8 @@ $routes->get('/payment-response', 'WebController::paymentResponse');
 
 $routes->get('/app-settings', 'AdminController::appSettings');
 
-$routes->get('/user-withdraw-requests', 'AdminController::userWithdrawRequests');
+$routes->get('/transactions', 'AdminController::transactions');
+// $routes->get('/user-withdraw-requests', 'AdminController::userWithdrawRequests');
 
 $routes->get('/users/(:any)', 'AdminController::userDetails/$1');
 $routes->get('/users', 'AdminController::users');

@@ -43,11 +43,19 @@
                         </p>
                     </a>
                 </li>
-                <li class="nav-item">
+                <!-- <li class="nav-item">
                     <a href="/user-withdraw-requests" class="nav-link">
                         <i class="nav-icon fas fa-wallet"></i>
                         <p>
                             User Withdraw Requests
+                        </p>
+                    </a>
+                </li> -->
+                <li class="nav-item">
+                    <a href="/transactions" class="nav-link">
+                        <i class="nav-icon fas fa-wallet"></i>
+                        <p>
+                            All Transactions
                         </p>
                     </a>
                 </li>

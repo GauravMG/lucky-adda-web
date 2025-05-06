@@ -1,4 +1,5 @@
 const BASE_API_PATH = "https://lucky-adda.com/api/v1"
+// const BASE_API_PATH = "https://6vqt42ml-9001.inc1.devtunnels.ms/v1"
 const userData = localStorage.getItem("userData") ?? null
 
 function getJWTToken() {
@@ -84,7 +85,7 @@ async function postAPICall({ endPoint, payload, callbackBeforeSend, callbackComp
                 return;
             }
 
-            if (xhr.responseJSON.status === 401) {
+            if (xhr.responseJSON && xhr.responseJSON.status === 401) {
                 toastr.error(errorMessage);
 
                 localStorage.removeItem("jwtToken")

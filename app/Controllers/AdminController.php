@@ -153,6 +153,16 @@ class AdminController extends BaseController
         return view('user-withdraw-requests', $data);
     }
 
+    public function transactions(): string
+    {
+        $data = [
+            'title' => 'Transactions',
+            'page_heading' => 'Transactions'
+        ];
+
+        return view('transactions', $data);
+    }
+
     public function appSettings(): string
     {
         $data = [
