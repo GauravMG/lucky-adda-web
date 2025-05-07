@@ -28,11 +28,6 @@ function formatDateWithoutTime(dateStr) {
 }
 
 function getDateFromDate(dateStr) {
-    const date = new Date(dateStr)
-
-    const options = {
-        day: '2-digit',   // 01, 02, etc.
-    }
-
-    return date.toLocaleString('en-US', options)
+    const date = new Date(dateStr);
+    return String(date.getUTCDate()).padStart(2, '0');
 }
